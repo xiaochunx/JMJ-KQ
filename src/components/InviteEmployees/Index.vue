@@ -18,10 +18,11 @@
 
     <div class="middle">
       <div class="mTop">
-        <img src="/static/employees/top.jpg" alt="图片不见啦" style="width: 217.5px;height: 123.5px">
+        <img src="/static/employees/top.jpg" alt="图片不见啦" style="width: 217.5px;height: 123.5px;margin-left: 80px">
       </div>
       <div class="mMid">
         <img src="/static/employees/middle.png" alt="图片不见啦" style="width: 151px;height: 163px">
+        <!--<img :src="imgSrc" alt="图片不见啦" style="width: 151px;height: 163px">-->
       </div>
       <div class="mFoo">
         <img src="/static/employees/bottom.png" alt="图片不见啦" style="width: 245px;height: 173px">
@@ -30,7 +31,7 @@
 
     <div class="footer">
       <div class="footerBtn">
-        <mt-button>录入前厅店员</mt-button>
+        <mt-button @click="changeRouter">录入前厅店员</mt-button>
       </div>
     </div>
 
@@ -40,6 +41,8 @@
   export default {
     data() {
       return {
+        imgSrc: "http://n.sinaimg.cn/news/transform/20171031/aLsa-fynfvar5426134.jpg",
+        title: "天河店-前厅",
         /*popupVisible: false,
         email: '',
         slots: [
@@ -50,10 +53,13 @@
             textAlign: 'center'
           }
         ]*/
-        title: "天河店-前厅"
+
       }
     },
     methods: {
+      changeRouter(){
+        this.$router.push("/InviteEmployees/InputInformation");
+      }
       /*changes(){
         // input information
         this.$router.push("/InviteEmployees/InputInformation");
@@ -95,12 +101,30 @@
     background-color: #fff;
     height: 500px;
     display: flex;
-    justify-content: center;
+    /*justify-content: center;*/
     align-items: center;
     flex-direction: column;
     .mTop{
       padding-top: 27px;
-
+      z-index: 200;
+      img{
+        margin-right: 12px;
+        width: 151px;
+        height: 163px;
+      }
+    }
+    .mMid{
+      position: relative;
+      z-index: 100;
+      img{
+        position: absolute;
+        left: 50%;
+        top: -6.5px;
+        margin-left: -70.5px;
+      }
+    }
+    .mFoo{
+      margin-top: 64px;
     }
   }
 
