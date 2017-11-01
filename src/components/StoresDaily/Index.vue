@@ -158,43 +158,55 @@
             selected: false
           },
           {
-            msg: "已签到",
+            msg: "早退",
             selected: false
           },
           {
-            msg: "已签到",
+            msg: "已签退",
             selected: false
           },
           {
-            msg: "已签到",
+            msg: "休息",
             selected: false
           },
           {
-            msg: "已签到",
+            msg: "补休",
             selected: false
           },
           {
-            msg: "已签到",
+            msg: "事假",
             selected: false
           },
           {
-            msg: "已签到",
+            msg: "病假",
             selected: false
           },
           {
-            msg: "已签到",
+            msg: "旷工",
             selected: false
           },
           {
-            msg: "已签到",
+            msg: "年假",
             selected: false
           },
           {
-            msg: "已签到",
+            msg: "婚嫁",
             selected: false
           },
           {
-            msg: "已签到",
+            msg: "产假",
+            selected: false
+          },
+          {
+            msg: "陪产假",
+            selected: false
+          },
+          {
+            msg: "工伤",
+            selected: false
+          },
+          {
+            msg: "丧假",
             selected: false
           }
         ],
