@@ -12,5 +12,6 @@ export default {
 
 <style scoped lang="less">
   @import "style/reset.css";
+  @import "style/animation.css";
   @import "style/main.less";
 </style>

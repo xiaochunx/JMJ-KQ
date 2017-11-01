@@ -4,7 +4,7 @@
     <div class="top">
       <div class="topBtn">
         <img src="../../assets/logo.png" width="24" height="24" style="margin-right: 20px">
-        <span>2</span>
+        <span @click="openPicker">{{pickerData}}</span>
         <span>3</span>
       </div>
     </div>
@@ -19,10 +19,10 @@
         <div class="middleMsg" v-for="(item,index) in list" :key="index">
           <div class="titleName">{{item.name}}</div>
           <div class="titleMsg" @click="open(index)">
-            <span v-if="item.type == 0" style="color: #ed1204">{{item.detail}}</span>
-            <span v-if="item.type == 1" style="color: deepskyblue">{{item.detail}}</span>
-            <span v-if="item.type == 2" style="color: lightcoral">{{item.detail}}</span>
-            <span v-if="item.type == 3" style="">{{item.detail}}</span>
+            <span v-if="item.type == 0" style="color: #ed1204">{{item.detail | FormatDate}}</span>
+            <span v-if="item.type == 1" style="color: deepskyblue">{{item.detail | FormatDate}}</span>
+            <span v-if="item.type == 2" style="color: lightcoral">{{item.detail | FormatDate}}</span>
+            <span v-if="item.type == 3" style="">{{item.detail | FormatDate}}</span>
             <img src="../../assets/logo.png" width="24" height="24">
           </div>
         </div>
@@ -34,6 +34,19 @@
         <mt-button>确认日报</mt-button>
       </div>
     </div>
+
+    <mt-datetime-picker
+      ref="picker"
+      type="date"
+      month-format="{value} 月"
+      date-format="{value} 日"
+      :startDate="startDate"
+      :endDate="endDate"
+      v-model="pickerValue"
+      @confirm="handleConfirm"
+      :closeOnClickModal="false"
+    >
+    </mt-datetime-picker>
 
     <mt-popup
       v-model="popupVisible"
@@ -48,73 +61,92 @@
         </div>
       </div>
     </mt-popup>
-
   </div>
 </template>
 <script>
+
+  import Vue from 'vue'
+
+  //过滤器
+  Vue.filter('FormatDate', function(item) {
+    var str = "";
+    item.forEach(function (value, index) {
+      str = value + '+' + str;
+    });
+
+    str = str.substring(0, str.lastIndexOf('+'));
+    return str;
+  });
+
+
   export default {
+
     data(){
       return{
         popupVisible: false,   // 控制蒙版的显隐
+        pickerValue: "",
+        pickerData: new Date().Format("yyyy-MM"),
         list: [
           {
             name: "程俊文",
-            detail: "未签到",
+            detail: ["已签到","未签到"],
             type: 0         // 红色
           },
           {
             name: "程俊文",
-            detail: "已签到",
+            detail: ["已签到"],
             type: 1         // 蓝色
           },
           {
             name: "程俊文",
-            detail: "未签到",
+            detail: ["未签到"],
             type: 2         // 橙色
           },
           {
             name: "程俊文",
-            detail: "未签到",
+            detail: ["未签到"],
             type: 3         // 黑色
           },
           {
             name: "程俊文",
-            detail: "未签到",
-            type: 3         // 黑色
-          }
-          ,
-          {
-            name: "程俊文",
-            detail: "未签到",
-            type: 3         // 黑色
-          }
-          ,
-          {
-            name: "程俊文",
-            detail: "未签到",
+            detail: ["未签到"],
             type: 3         // 黑色
           },
           {
             name: "程俊文",
-            detail: "未签到",
+            detail: ["未签到"],
             type: 3         // 黑色
           },
           {
             name: "程俊文",
-            detail: "未签到",
+            detail: ["未签到"],
             type: 3         // 黑色
           },
           {
             name: "程俊文",
-            detail: "未签到",
+            detail: ["未签到"],
             type: 3         // 黑色
           },
           {
             name: "程俊文",
-            detail: "未签到",
+            detail: ["未签到"],
             type: 3         // 黑色
-          }
-
+          },
+          {
+            name: "程俊文",
+            detail: ["未签到"],
+            type: 3         // 黑色
+          },
+          {
+            name: "程俊文",
+            detail: ["未签到"],
+            type: 3         // 黑色
+          },
+          {
+            name: "程俊文",
+            detail: ["未签到"],
+            type: 3         // 黑色
+          },
         ],
         detail: [
           {
@@ -165,7 +197,9 @@
             msg: "已签到",
             selected: false
           }
-        ]
+        ],
+        startDate: new Date('2014-1-1'),
+        endDate: new Date()
       }
     },
     methods: {
@@ -176,8 +210,17 @@
         this.detail[index].selected = !this.detail[index].selected;
       },
       sure(){
-        console.log("sure");
+        this.popupVisible = false;
+      },
+      openPicker() {
+        this.$refs.picker.open();
+      },
+      handleConfirm(){
+        this.pickerData = new Date(this.pickerValue).Format("yyyy-MM");
       }
+    },
+    computed: {
+
     }
   }
 </script>
@@ -205,7 +248,6 @@
         span:nth-child(2){
           flex: 8;
           width: 30px;
-          background-color: black;
         }
         span:nth-child(3){
           flex: 1;

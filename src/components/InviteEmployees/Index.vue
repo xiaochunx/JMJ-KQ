@@ -1,5 +1,5 @@
 <template>
-  <div v-wechat-title="$route.meta.title">
+  <div v-wechat-title="$route.meta.title" id="inviteEmployees">
     <!--<mt-button @click="openPop">按钮</mt-button>
     <mt-popup
       v-model="popupVisible"
@@ -84,6 +84,11 @@
     width: 100% ;
   }*/
 
+  #inviteEmployees{
+    height: 100%;
+    background: white;
+  }
+
   .top {
     width: 100%;
     display: flex;
@@ -96,7 +101,7 @@
   }
 
   .middle {
-    margin-top: 10px;
+    border-top: 10px solid rgb(245,245,245);
     padding: 0 40px;
     background-color: #fff;
     height: 500px;

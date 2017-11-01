@@ -50,8 +50,10 @@
     <mt-popup
       v-model="popupSubmit">
       <div class="mask">
-        <div>{{msgTip}}</div>
-        <mt-button @click="sure">确认</mt-button>
+        <div class="msgTip">{{msgTip}}</div>
+        <div class="footerBtn">
+          <mt-button @click="sure">确认</mt-button>
+        </div>
       </div>
     </mt-popup>
   </div>
@@ -111,9 +113,11 @@
   }
 </script>
 <style scoped lang="less">
+
   .content{
     padding: 44px 40px;
-    /*background-color: red;*/
+    height: 100%;
+    background-color: white;
     .item{
       margin-bottom: 20px;
       display: flex;
@@ -163,6 +167,36 @@
         height: 42px;
         font-size: 16px;
       }
+    }
+  }
+
+  .mask{
+    width: 220px;
+    padding: 30px 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 5px;
+    .msgTip{
+      margin-bottom: 20px;
+      color: #ed1204;
+      font-size: 20px;
+    }
+  }
+
+  .footerBtn {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .mint-button--normal {
+      flex: 1;
+      background:-webkit-gradient(linear, -30% 50%, 30% -50%, from(#ed1204), to(#ed3806));
+      color: white;
+      height: 42px;
+      font-size: 16px;
     }
   }
 </style>
