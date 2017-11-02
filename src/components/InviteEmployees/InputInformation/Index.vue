@@ -2,32 +2,32 @@
   <div v-wechat-title="$route.meta.title" class="content">
     <div class="item">
       <div>
-        <img src="../../../assets/logo.png" alt="" style="width: 25px;height: 25px;">
+        <img :src="'./static/inputInformation/shenfenzheng.png'" alt="" style="width: 25px;height: 25px;">
       </div>
       <input type="text" v-model="IDCode" placeholder="请输入身份证号码">
     </div>
 
     <div class="item">
       <div>
-        <img src="../../../assets/logo.png" alt="" style="width: 25px;height: 25px;">
+        <img :src="'./static/inputInformation/xingming.png'" alt="" style="width: 25px;height: 25px;">
       </div>
       <input type="username" v-model="username" placeholder="请输入姓名">
     </div>
     <div class="item">
       <div>
-        <img src="../../../assets/logo.png" alt="" style="width: 25px;height: 25px;">
+        <img :src="'./static/inputInformation/shouji .png'" alt="" style="width: 25px;height: 25px;">
       </div>
       <input type="text" v-model="Tel" placeholder="请输入手机号码">
     </div>
     <div class="item">
       <div>
-        <img src="../../../assets/logo.png" alt="" style="width: 25px;height: 25px;">
+        <img :src="'./static/inputInformation/xueli.png'" alt="" style="width: 25px;height: 25px;">
       </div>
-      <input type="text" v-model="education" placeholder="请选择学历" @click="openPop">
+      <input type="text" v-model="education" readonly="readonly" placeholder="请选择学历" @click="openPop">
     </div>
     <div class="item">
       <div>
-        <img src="../../../assets/logo.png" alt="" style="width: 25px;height: 25px;">
+        <img :src="'./static/inputInformation/mima.png'" alt="" style="width: 25px;height: 25px;">
       </div>
       <input type="password" v-model="password" placeholder="请输入密码">
     </div>
@@ -116,7 +116,7 @@
 
   .content{
     padding: 44px 40px;
-    height: 100%;
+    height : calc(~"100% - 88px");
     background-color: white;
     .item{
       margin-bottom: 20px;

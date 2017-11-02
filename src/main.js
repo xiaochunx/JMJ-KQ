@@ -6,7 +6,17 @@ import router from './router'
 import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import './utils/DataFormat.js'
+import 'element-ui/lib/theme-default/index.css'
+import Axios from 'axios'
+// import element from 'element-ui'
+import { Radio,Input } from 'element-ui'
 
+
+Vue.prototype.$http = Axios;
+
+// Vue.use(element);
+Vue.use(Radio);
+Vue.use(Input);
 // 微信标题
 Vue.use(require('vue-wechat-title'));
 

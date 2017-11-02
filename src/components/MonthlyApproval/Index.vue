@@ -107,7 +107,7 @@
 </script>
 <style lang="less" scoped>
   #monthlyApp{
-    padding: 22px 20px 0 20px;
+    padding: 22px 20px 1px 20px;
     color: #282828;
     .cell{
       margin-bottom: 22px;

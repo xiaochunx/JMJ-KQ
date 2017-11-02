@@ -2,11 +2,11 @@
   <div v-wechat-title="$route.meta.title" id="storesDaily">
     <div class="top">
       <div class="title">
-        <img src="../../assets/logo.png" alt="" style="width: 25px;height: 25px">
+        <img :src="'./static/storeLocation/weizhi.png'" alt="" style="width: 25px;height: 25px">
         <span @click="getCur">获取位置</span>
       </div>
       <div class="title">
-        <img src="../../assets/logo.png" alt="" style="width: 25px;height: 25px">
+        <img :src="'./static/storeLocation/weizhi1.png'" alt="" style="width: 25px;height: 25px">
         <span @click="check">查看位置</span>
       </div>
     </div>

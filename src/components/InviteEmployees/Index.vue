@@ -18,14 +18,14 @@
 
     <div class="middle">
       <div class="mTop">
-        <img src="/static/employees/top.jpg" alt="图片不见啦" style="width: 217.5px;height: 123.5px;margin-left: 80px">
+        <img :src="'./static/employees/top.jpg'" alt="图片不见啦" style="width: 217.5px;height: 123.5px;margin-left: 80px">
       </div>
       <div class="mMid">
-        <img src="/static/employees/middle.png" alt="图片不见啦" style="width: 151px;height: 163px">
+        <img :src="'./static/employees/middle.png'" alt="图片不见啦" style="width: 151px;height: 163px">
         <!--<img :src="imgSrc" alt="图片不见啦" style="width: 151px;height: 163px">-->
       </div>
       <div class="mFoo">
-        <img src="/static/employees/bottom.png" alt="图片不见啦" style="width: 245px;height: 173px">
+        <img :src="'./static/employees/bottom.png'" alt="图片不见啦" style="width: 245px;height: 173px">
       </div>
     </div>
 
@@ -43,17 +43,6 @@
       return {
         imgSrc: "http://n.sinaimg.cn/news/transform/20171031/aLsa-fynfvar5426134.jpg",
         title: "天河店-前厅",
-        /*popupVisible: false,
-        email: '',
-        slots: [
-          {
-            flex: 1,
-            values: ['大学','高中','小学','本科','专科'],
-            className: 'slot1',
-            textAlign: 'center'
-          }
-        ]*/
-
       }
     },
     methods: {
@@ -104,7 +93,7 @@
     border-top: 10px solid rgb(245,245,245);
     padding: 0 40px;
     background-color: #fff;
-    height: 500px;
+    height: 450px;
     display: flex;
     /*justify-content: center;*/
     align-items: center;

@@ -18,4 +18,4 @@ Date.prototype.Format = function (fmt) { //author: meizz
 
 // use
 // var time1 = new Date().Format("yyyy-MM-dd");
-// var time2 = new Date().Format("yyyy-MM-dd HH:mm:ss");
+// var time2 = new Date().Format("yyyy-MM-dd hh:mm:ss");
