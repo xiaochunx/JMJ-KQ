@@ -98,3 +98,16 @@ textarea::-webkit-input-placeholder {
 .mint-popup{
   border-radius: 6px;
 }
+
+
+.loading{
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.isLoading{
+  margin-bottom: 10px;
+}

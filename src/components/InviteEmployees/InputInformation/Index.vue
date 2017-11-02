@@ -61,6 +61,7 @@
 </template>
 <script>
 
+  import { requresEmployessinitialize,requresEmployessPostMsg } from '../../../api/api'
 
   export default {
     data(){
@@ -73,23 +74,6 @@
         username: "",         // 姓名
         Tel: "",              // 电话号码
         IDCode: "",           // 身份证号码
-        /*slots: [
-          {
-            flex: 1,
-            values: ['2015-01', '2015-02', '2015-03', '2015-04', '2015-05', '2015-06'],
-            className: 'slot1',
-            textAlign: 'right'
-          }, {
-            divider: true,
-            content: '-',
-            className: 'slot2'
-          }, {
-            flex: 1,
-            values: ['2015-01', '2015-02', '2015-03', '2015-04', '2015-05', '2015-06'],
-            className: 'slot3',
-            textAlign: 'left'
-          }
-        ]*/
         slots: [
           {
             flex: 1,
@@ -118,17 +102,48 @@
         if (this.education == "" || this.password == "" || this.username == "" || this.Tel == "" || this.IDCode == ""){
           flag = false
         }
-        this.popupSubmit = true;
+
 
         if (flag){
-          this.msgTip = "录入成功!";
+          var params = {
+            IDCode: this.IDCode,
+            Tel: this.Tel,
+            username: this.username,
+            education: this.education,
+            a_password: this.password,
+            b_password: this.password
+          };
+
+
+          requresEmployessPostMsg(params).then((res) => {
+            this.popupSubmit = true;
+            this.msgTip = res.msg;
+          }).catch((error) => {
+            console.log(error);
+          });
+
         }else {
+          this.popupSubmit = true;
           this.msgTip = "所有的选项都需要填写!";
         }
       },
       sure(){
         this.popupSubmit = false;
       }
+    },
+    mounted(){
+      requresEmployessinitialize().then((res) => {
+        console.log(res);
+        if (res.code == 1){
+          this.slots[0].values = res.data.educationlist;
+          this.IDCode = res.data.info.IDCode;
+          this.username = res.data.info.username;
+          this.Tel = res.data.info.Tel;
+          this.education = res.data.info.education;
+        }
+      }).catch((res) => {
+        console.log(res);
+      })
     }
   }
 </script>
@@ -220,3 +235,4 @@
     }
   }
 </style>
+

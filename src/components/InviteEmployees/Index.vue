@@ -21,8 +21,8 @@
         <img :src="'./static/employees/top.jpg'" alt="图片不见啦" style="width: 217.5px;height: 123.5px;margin-left: 80px">
       </div>
       <div class="mMid">
-        <img :src="'./static/employees/middle.png'" alt="图片不见啦" style="width: 151px;height: 163px">
-        <!--<img :src="imgSrc" alt="图片不见啦" style="width: 151px;height: 163px">-->
+        <!--<img :src="'./static/employees/middle.png'" alt="图片不见啦" style="width: 151px;height: 163px">-->
+        <img :src="imgSrc" alt="图片不见啦" style="width: 151px;height: 163px">
       </div>
       <div class="mFoo">
         <img :src="'./static/employees/bottom.png'" alt="图片不见啦" style="width: 245px;height: 173px">
@@ -35,30 +35,56 @@
       </div>
     </div>
 
+    <mt-popup
+      v-model="loading"
+    >
+      <div class="loading">
+        <mt-spinner type="fading-circle" class="isLoading"></mt-spinner>
+        <div>加载数据中...</div>
+      </div>
+    </mt-popup>
+
   </div>
 </template>
 <script>
+  import { requresEmployessInfo } from '../../api/api'
+
   export default {
     data() {
       return {
-        imgSrc: "http://n.sinaimg.cn/news/transform/20171031/aLsa-fynfvar5426134.jpg",
+        loading: false,
+        imgSrc: "",
         title: "天河店-前厅",
+        goUrl: ""
       }
     },
     methods: {
       changeRouter(){
-        this.$router.push("/InviteEmployees/InputInformation");
+//        this.$router.push("/InviteEmployees/InputInformation");
+        // 跳转后台页面
+        window.location.href = this.goUrl;
       }
     },
     mounted(){
-      console.log(this.$http.post);
+      requresEmployessInfo().then(res => {
+        console.log(res);
+        if (res.code == 1){
+          this.imgSrc = res.data.imgSrc;
+          this.title = res.data.title;
+          this.goUrl = res.data.gourl;
+        }
+      }).catch((error) => {
+        console.log(error);
+      })
+
+      /*console.log(this.$http.post);
       this.$http.post('http://kq.7kou.cn/kqadmin/api.php?controller=SysAdmin&action=yaoqing&mod=erweima')
         .then(function (response) {
         console.log(response);
       })
         .catch(function (error) {
           console.log(error);
-        });
+        });*/
     }
   }
 </script>
@@ -107,8 +133,8 @@
       img{
         position: absolute;
         left: 50%;
-        top: -6.5px;
-        margin-left: -70.5px;
+        top: -10.5px;
+        margin-left: -72.5px;
       }
     }
     .mFoo{
@@ -136,4 +162,6 @@
       }
     }
   }
+
+
 </style>

@@ -87,18 +87,18 @@ export default new Router({
       component: ModifyLog
     },
     {
-      path: '/main',
+      path: '/',
       meta: {
         title: '全部功能'
       },
       component: Repertoire
     },
-    {
+    /*{
       path: "*",
       meta: {
         title: '全部功能'
       },
       component: Repertoire
-    }
+    }*/
   ]
 })
