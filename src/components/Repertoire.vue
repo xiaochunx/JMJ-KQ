@@ -78,7 +78,7 @@
       }
     },
     mounted(){
-      var params = ""
+      /*var params = ""
       requestAllFunction().then((res) => {
         if (res){
           this.list = res.data.data;
@@ -86,7 +86,7 @@
       })
         .catch((error) => {
           console.log(error);
-        })
+        })*/
       /*this.$http.post('http://kq.7kou.cn/kqadmin/api.php?controller=SysHome&action=wapmenu')
         .then(function (response) {
           console.log(response);
