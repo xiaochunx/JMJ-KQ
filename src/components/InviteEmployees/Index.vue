@@ -49,22 +49,16 @@
       changeRouter(){
         this.$router.push("/InviteEmployees/InputInformation");
       }
-      /*changes(){
-        // input information
-        this.$router.push("/InviteEmployees/InputInformation");
-      },
-      openPop(){
-        this.popupVisible = true;
-      },
-      onValuesChange(picker, values) {
-        this.email = values[0];
-        if (values[0] > values[1]) {
-          picker.setSlotValue(1, values[0]);
-        }
-      },
-      getSlotValue(value){
-        console.log(value);
-      }*/
+    },
+    mounted(){
+      console.log(this.$http.post);
+      this.$http.post('http://kq.7kou.cn/kqadmin/api.php?controller=SysAdmin&action=yaoqing&mod=erweima')
+        .then(function (response) {
+        console.log(response);
+      })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
   }
 </script>

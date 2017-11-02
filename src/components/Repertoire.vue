@@ -12,6 +12,7 @@
 </template>
 
 <script>
+  import { requestAllFunction } from '../api/api'
   export default {
     data() {
       return {
@@ -77,7 +78,16 @@
       }
     },
     mounted(){
-      this.$http.post('http://kq.7kou.cn/kqadmin/api.php?controller=SysHome&action=wapmenu')
+      var params = ""
+      requestAllFunction().then((res) => {
+        if (res){
+          this.list = res.data.data;
+        }
+      })
+        .catch((error) => {
+          console.log(error);
+        })
+      /*this.$http.post('http://kq.7kou.cn/kqadmin/api.php?controller=SysHome&action=wapmenu')
         .then(function (response) {
           console.log(response);
           if (response){
@@ -86,7 +96,7 @@
       })
         .catch(function (error) {
           console.log(error);
-        })
+        })*/
     }
   }
 </script>

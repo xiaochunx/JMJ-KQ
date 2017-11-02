@@ -32,6 +32,7 @@
       <input type="password" v-model="password" placeholder="请输入密码">
     </div>
 
+
     <div class="footer">
       <div class="footerBtn">
         <mt-button @click="submit">提交</mt-button>
@@ -72,6 +73,23 @@
         username: "",         // 姓名
         Tel: "",              // 电话号码
         IDCode: "",           // 身份证号码
+        /*slots: [
+          {
+            flex: 1,
+            values: ['2015-01', '2015-02', '2015-03', '2015-04', '2015-05', '2015-06'],
+            className: 'slot1',
+            textAlign: 'right'
+          }, {
+            divider: true,
+            content: '-',
+            className: 'slot2'
+          }, {
+            flex: 1,
+            values: ['2015-01', '2015-02', '2015-03', '2015-04', '2015-05', '2015-06'],
+            className: 'slot3',
+            textAlign: 'left'
+          }
+        ]*/
         slots: [
           {
             flex: 1,
@@ -87,6 +105,8 @@
         this.popupVisible = true;
       },
       onValuesChange(picker, values) {
+        console.log(picker);
+        console.log(values);
         this.education = values[0];
         if (values[0] > values[1]) {
           picker.setSlotValue(1, values[0]);

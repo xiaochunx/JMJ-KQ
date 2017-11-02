@@ -7,7 +7,6 @@
 
       <div class="middle">
 
-
         <div class="item gColor" v-for="(value,index) in list">
           <img :src="value.imgSrc" alt="" style="width: 60px;height: 60px;border-radius: 100px">
           <div class="radio">

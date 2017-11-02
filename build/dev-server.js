@@ -19,7 +19,7 @@ const webpackConfig = (process.env.NODE_ENV === 'testing' || process.env.NODE_EN
 const port = process.env.PORT || config.dev.port
 // automatically open browser, if not set will be false
 const autoOpenBrowser = !!config.dev.autoOpenBrowser
-// Define HTTP proxies to your custom API backend
+// Define HTTP proxies to your custom api backend
 // https://github.com/chimurai/http-proxy-middleware
 const proxyTable = config.dev.proxyTable
 
@@ -58,7 +58,7 @@ Object.keys(proxyTable).forEach(function (context) {
   app.use(proxyMiddleware(options.filter || context, options))
 })
 
-// handle fallback for HTML5 history API
+// handle fallback for HTML5 history api
 app.use(require('connect-history-api-fallback')())
 
 // serve webpack bundle output
