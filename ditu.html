@@ -1,46 +1,68 @@
-<!doctype html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-  <script src="./wx.js"></script>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Geolocation Components Demo - zoom effect</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,
+    minimum-scale=1,maximum-scale=1,user-scalable=no">
+  <style>
+    * {margin: 0; padding: 0; border: 0;}
+    body {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+    #geoPage, #markPage {
+      position: relative;
+    }
+  </style>
 </head>
 <body>
+<!--  通过 iframe 嵌入前端定位组件，此处没有隐藏定位组件，使用了定位组件的在定位中视觉特效  -->
+<iframe id="geoPage" width="100%" height="30%" frameborder=0 scrolling="no"
+        src="https://apis.map.qq.com/tools/geolocation?key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77&referer=myapp&effect=zoom"></iframe>
 
+<script type="text/JavaScript">
+  var loc;
+  var isMapInit = false;
+  //监听定位组件的message事件
+  window.addEventListener('message', function(event) {
+    loc = event.data; // 接收位置信息
+    console.log('location', loc);
 
-<script>
+    if(loc  && loc.module == 'geolocation') { //定位成功,防止其他应用也会向该页面post信息，需判断module是否为'geolocation'
+      var markUrl = 'https://apis.map.qq.com/tools/poimarker' +
+        '?marker=coord:' + loc.lat + ',' + loc.lng +
+        ';title:我的位置;addr:' + (loc.addr || loc.city) +
+        '&key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77&referer=myapp';
+      //给位置展示组件赋值
+      document.getElementById('markPage').src = markUrl;
+    } else { //定位组件在定位失败后，也会触发message, event.data为null
+      alert('定位失败');
+    }
 
-  console.log(wx);
+    /* 另一个使用方式
+    if (!isMapInit && !loc) { //首次定位成功，创建地图
+        isMapInit = true;
+        createMap(event.data);
+    } else if (event.data) { //地图已经创建，再收到新的位置信息后更新地图中心点
+        updateMapCenter(event.data);
+    }
+    */
+  }, false);
+  //为防止定位组件在message事件监听前已经触发定位成功事件，在此处显示请求一次位置信息
+  document.getElementById("geoPage").contentWindow.postMessage('getLocation', '*');
 
-    wx.getLocation({
-      type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-      success: function (res) {
-        var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-        var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-        var speed = res.speed; // 速度，以米/每秒计
-        var accuracy = res.accuracy; // 位置精度
-
-        console.log(latitude);
-        console.log(longitude);
-        console.log(speed);
-        console.log(accuracy);
-      }
-    });
-
-
-    wx.openLocation({
-      latitude: 113.30764968, // 纬度，浮点数，范围为90 ~ -90
-      longitude: 23.12004910, // 经度，浮点数，范围为180 ~ -180。
-      name: '', // 位置名
-      address: '', // 地址详情说明
-      scale: 20, // 地图缩放级别,整形值,范围从1~28。默认为最大
-      infoUrl: '' // 在查看位置界面底部显示的超链接,可点击跳转
-    });
-
-
+  //设置6s超时，防止定位组件长时间获取位置信息未响应
+  setTimeout(function() {
+    if(!loc) {
+      //主动与前端定位组件通信（可选），获取粗糙的IP定位结果
+      document.getElementById("geoPage")
+        .contentWindow.postMessage('getLocation.robust', '*');
+    }
+  }, 6000); //6s为推荐值，业务调用方可根据自己的需求设置改时间，不建议太短
 </script>
+
+<!-- 接收到位置信息后 通过 iframe 嵌入位置标注组件 -->
+<iframe id="markPage" width="100%" height="70%" frameborder=0 scrolling="no" src=""></iframe>
 </body>
 </html>

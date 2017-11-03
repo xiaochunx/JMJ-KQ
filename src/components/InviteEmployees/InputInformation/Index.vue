@@ -19,12 +19,25 @@
       </div>
       <input type="text" v-model="Tel" placeholder="请输入手机号码">
     </div>
-    <div class="item">
+
+
+    <div class="itemD">
+      <div>
+        <img :src="'./static/inputInformation/xueli.png'" alt="" style="width: 25px;height: 25px;">
+      </div>
+      <div @click="openPopup">{{education}}</div>
+    </div>
+
+
+    <!--<div class="item">
       <div>
         <img :src="'./static/inputInformation/xueli.png'" alt="" style="width: 25px;height: 25px;">
       </div>
       <input type="text" v-model="education" readonly="readonly" placeholder="请选择学历" @click="openPop">
-    </div>
+    </div>-->
+
+
+
     <div class="item">
       <div>
         <img :src="'./static/inputInformation/mima.png'" alt="" style="width: 25px;height: 25px;">
@@ -44,7 +57,7 @@
       :closeOnClickModal="true"
       position="bottom"
     >
-      <mt-picker :slots="slots" @change="onValuesChange" confirmText="sdasf" style="width:100%"></mt-picker>
+      <mt-picker :slots="slots" @change="onValuesChange" style="width:100%"></mt-picker>
     </mt-popup>
 
 
@@ -57,6 +70,7 @@
         </div>
       </div>
     </mt-popup>
+
   </div>
 </template>
 <script>
@@ -85,12 +99,10 @@
       }
     },
     methods: {
-      openPop(){
+      openPopup(){
         this.popupVisible = true;
       },
       onValuesChange(picker, values) {
-        console.log(picker);
-        console.log(values);
         this.education = values[0];
         if (values[0] > values[1]) {
           picker.setSlotValue(1, values[0]);
@@ -102,7 +114,6 @@
         if (this.education == "" || this.password == "" || this.username == "" || this.Tel == "" || this.IDCode == ""){
           flag = false
         }
-
 
         if (flag){
           var params = {
@@ -132,6 +143,8 @@
       }
     },
     mounted(){
+
+
       requresEmployessinitialize().then((res) => {
         console.log(res);
         if (res.code == 1){
@@ -140,6 +153,7 @@
           this.username = res.data.info.username;
           this.Tel = res.data.info.Tel;
           this.education = res.data.info.education;
+          this.onValuesChange(res.data.educationlist);
         }
       }).catch((res) => {
         console.log(res);
@@ -179,11 +193,9 @@
   .gap{
     margin-top: 10px;
   }
-
   .mint-popup-bottom{
     width: 100% ;
   }
-
 
   // footer
   .footer {
@@ -204,7 +216,6 @@
       }
     }
   }
-
   .mask{
     width: 220px;
     padding: 30px 50px;
@@ -219,7 +230,6 @@
       font-size: 20px;
     }
   }
-
   .footerBtn {
     width: 100%;
     flex: 1;
@@ -232,6 +242,29 @@
       color: white;
       height: 42px;
       font-size: 16px;
+    }
+  }
+
+
+  .itemD {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    div:nth-child(1) {
+      flex: 1;
+      line-height: 44px;
+      margin-right: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    div:nth-child(2) {
+      flex: 8;
+      line-height: 44px;
+      height: 44px;
+      border-bottom: 1px solid gainsboro;
     }
   }
 </style>

@@ -8,6 +8,8 @@
         </mt-cell>
       </mt-index-section>
     </mt-index-list>
+
+
   </div>
 </template>
 
@@ -16,6 +18,8 @@
   export default {
     data() {
       return {
+        loading: true,
+        tipMsg: "正在加载中...",
         list: [
           [
             {
@@ -78,25 +82,22 @@
       }
     },
     mounted(){
-      /*var params = ""
+
       requestAllFunction().then((res) => {
-        if (res){
-          this.list = res.data.data;
+        if (res.code == 1){
+          this.loading = false;
+          this.list = res.data;
+        }else{
+          var _this = this;
+          this.tipMsg = res.msg;
+          window.setTimeout(function () {
+            _this.loading = false;
+          },800);
         }
       })
         .catch((error) => {
           console.log(error);
-        })*/
-      /*this.$http.post('http://kq.7kou.cn/kqadmin/api.php?controller=SysHome&action=wapmenu')
-        .then(function (response) {
-          console.log(response);
-          if (response){
-          this.list = response.data.data;
-        }
-      })
-        .catch(function (error) {
-          console.log(error);
-        })*/
+        })
     }
   }
 </script>

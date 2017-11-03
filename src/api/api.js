@@ -4,6 +4,8 @@ import qs from 'qs'
 // 配置域名
 let base = 'http://kq.7kou.cn';
 
+
+
 // 请求所有功能接口
 export const requestAllFunction  = params => { return axios.post(`${base}/kqadmin/api.php?controller=SysHome&action=wapmenu`,params).then(res => res.data); };
 
@@ -16,8 +18,21 @@ export const requresEmployessinitialize = params => { return axios.post(`${base}
 // 录入员工信息-提交信息
 export const requresEmployessPostMsg = params => { return axios.post(`${base}/kqadmin/api.php?controller=SysAdmin&action=yaoqing`,qs.stringify(params)).then(res => res.data)};
 
+// 门店位置-初始化
+export const requestStoresInitialize = params => { return axios.post(`${base}/kqadmin/api.php?controller=SysArea&action=store&mod=info`,params).then(res => res.data)};
 
+// 门店位置-提交门店位置
+export const storesLocationPostMsg = params => { return axios.post(`${base}/kqadmin/api.php?controller=SysAdmin&action=yaoqing`,qs.stringify(params)).then(res => res.data)};
+
+// 签到-初始化
+export const signIninitialize = params => { return axios.post(`${base}/kqadmin/api.php?controller=ClockMain&action=index&mod=init`,params).then(res => res.data)};
+
+
+
+
+
+// post请求示例
 export const requestLogin = params => { return axios.post(`${base}/login`, params).then(res => res.data); };
 
-//
+// get请求示例
 export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }); };

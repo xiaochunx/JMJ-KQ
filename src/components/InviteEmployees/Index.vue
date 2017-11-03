@@ -76,22 +76,10 @@
       }).catch((error) => {
         console.log(error);
       })
-
-      /*console.log(this.$http.post);
-      this.$http.post('http://kq.7kou.cn/kqadmin/api.php?controller=SysAdmin&action=yaoqing&mod=erweima')
-        .then(function (response) {
-        console.log(response);
-      })
-        .catch(function (error) {
-          console.log(error);
-        });*/
     }
   }
 </script>
 <style scoped lang="less">
-  /*.mint-popup-bottom{
-    width: 100% ;
-  }*/
 
   #inviteEmployees{
     height: 100%;

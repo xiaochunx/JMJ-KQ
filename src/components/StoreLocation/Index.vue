@@ -39,6 +39,7 @@
     </mt-popup>
 
     <!--<map-view :height="height" :longitude="longitude" :latitude="latitude"></map-view>-->
+
     <!-- 地图控件 -->
     <div id="div1" style="height: calc(100% - 248px);"></div>
 
@@ -54,36 +55,36 @@
   </div>
 </template>
 <script>
-  import MapView from '../MapView.vue'
+  import {requestStoresInitialize} from '../../api/api.js'
 
   export default {
-    data(){
-      return{
+    data() {
+      return {
         loading: false,
         popupSubmit: false,
         msgTip: "保存成功",
-        longitude:113.30764968,
-        latitude:23.1200491,
+        longitude: 113.30764968,
+        latitude: 23.1200491,
       }
     },
     methods: {
-      submit(){
+      submit() {
         this.popupSubmit = true;
       },
-      sure(){
+      sure() {
         this.popupSubmit = false;
       },
-      check(){
+      check() {
         this.loading = true;
         var _this = this;
         // 百度地图API功能
         var map = new BMap.Map("div1");
-        var point = new BMap.Point(116.331398,30.897445);
-        map.centerAndZoom(point,18);
+        var point = new BMap.Point(116.331398, 30.897445);
+        map.centerAndZoom(point, 18);
 
         var geolocation = new BMap.Geolocation();
-        geolocation.getCurrentPosition(function(r){
-          if(this.getStatus() == BMAP_STATUS_SUCCESS){
+        geolocation.getCurrentPosition(function (r) {
+          if (this.getStatus() == BMAP_STATUS_SUCCESS) {
             var mk = new BMap.Marker(r.point);
             map.addOverlay(mk);
             map.panTo(r.point);
@@ -94,9 +95,9 @@
 
           }
           else {
-            alert('failed'+this.getStatus());
+            alert('failed' + this.getStatus());
           }
-        },{enableHighAccuracy: true})
+        }, {enableHighAccuracy: true})
 
         //关于状态码
         //BMAP_STATUS_SUCCESS	检索成功。对应数值“0”。
@@ -109,28 +110,159 @@
         //BMAP_STATUS_SERVICE_UNAVAILABLE	服务不可用。对应数值“7”。(自 1.1 新增)
         //BMAP_STATUS_TIMEOUT	超时。对应数值“8”。(自 1.1 新增)
       },
-      getCur(){
+      getCur() {
         var _this = this;
         this.loading = true;
         var geolocation = new BMap.Geolocation();
-        geolocation.getCurrentPosition(function(r){
+        geolocation.getCurrentPosition(function (r) {
           // 获取当前经纬度
           _this.latitude = r.latitude;
           _this.longitude = r.longitude;
           _this.loading = false;
-        },{enableHighAccuracy: true})
+        }, {enableHighAccuracy: true})
       }
     },
-    mounted(){
+    mounted() {
+
+      console.log(wx);
+
+      /*var jsApiList = [
+        'openLocation','getLocation','checkJsApi'
+      ];
+      wx.config({
+        debug: true,
+        appId: "wx9fad84f36b3a2463",
+        nonceStr: "SACT8vJLRh9DFdLs",
+        timestamp: 1509703238,
+        signature: "b401b5c0993604e6388006b011ed5ca837c1ba6f",
+        jsApiList: jsApiList
+      });
+
+      // 检测API是否可用
+      wx.ready(function(){
+
+        console.log('1');
+
+        wx.checkJsApi({
+          jsApiList: [
+            'getLocation'
+          ],
+          success: function (res) {
+            if (res.checkResult.getLocation == false) {
+              alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+              return;
+            }
+          }
+        });
+
+        wx.getLocation({
+          type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+          success: function (res) {
+            console.log(res);
+            var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+            var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+            var speed = res.speed; // 速度，以米/每秒计
+            var accuracy = res.accuracy; // 位置精度
+
+            wx.openLocation({
+              latitude: latitude, // 纬度，浮点数，范围为90 ~ -90
+              longitude: longitude, // 经度，浮点数，范围为180 ~ -180。
+              name: '', // 位置名
+              address: '', // 地址详情说明
+              scale: 20, // 地图缩放级别,整形值,范围从1~28。默认为最大
+              infoUrl: '' // 在查看位置界面底部显示的超链接,可点击跳转
+            });
+          }
+        });
+      });*/
+
       this.check();
-    },
-    components: {
-      MapView
+
+      requestStoresInitialize().then((res) => {
+        console.log(res);
+        if (res.code == 1) {
+          var appId = res.data.signpackage.appId;
+          var nonceStr = res.data.signpackage.nonceStr;
+          var timestamp = res.data.signpackage.timestamp;
+          var signature = res.data.signpackage.signature;
+          var jsApiList = [
+            'openLocation', 'getLocation', 'checkJsApi'
+          ];
+
+          alert('请求成功啦');
+
+          // 配置微信
+          wx.config({
+            debug: true,
+            appId: appId,
+            nonceStr: nonceStr,
+            timestamp: timestamp,
+            signature: signature,
+            jsApiList: jsApiList
+          });
+
+          /*wx.config({
+            appId: "wx9fad84f36b3a2463",
+            nonceStr: "SACT8vJLRh9DFdLs",
+            timestamp: 1509703238,
+            signature: "b401b5c0993604e6388006b011ed5ca837c1ba6f",
+            jsApiList: jsApiList
+          });*/
+
+          // 检测API是否可用
+          wx.ready(function () {
+
+            alert('来到这个地方说明wx准备好了');
+
+            wx.checkJsApi({
+              jsApiList: [
+                'getLocation'
+              ],
+              success: function (res) {
+                if (res.checkResult.getLocation == false) {
+                  alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+                  return;
+                }
+              }
+            });
+
+            wx.getLocation({
+              type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+              success: function (res) {
+
+                alert('成功获取到坐标');
+
+                var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                var speed = res.speed; // 速度，以米/每秒计
+                var accuracy = res.accuracy; // 位置精度
+
+                alert(latitude);
+                alert(longitude);
+
+
+                wx.openLocation({
+                  latitude: latitude, // 纬度，浮点数，范围为90 ~ -90
+                  longitude: longitude, // 经度，浮点数，范围为180 ~ -180。
+                  name: '', // 位置名
+                  address: '', // 地址详情说明
+                  scale: 20, // 地图缩放级别,整形值,范围从1~28。默认为最大
+                  infoUrl: '' // 在查看位置界面底部显示的超链接,可点击跳转
+                });
+              }
+            });
+
+          });
+
+        }
+      }).catch((error) => {
+
+      })
     }
   }
 </script>
 <style scoped lang="less">
-  #storesDaily{
+  #storesDaily {
     height: 100%;
     .top {
       display: flex;
@@ -154,21 +286,21 @@
       }
     }
 
-    .lAL{
+    .lAL {
       margin-top: 10px;
-      .longitude{
+      .longitude {
         height: 44px;
         background: white;
         display: flex;
         justify-content: center;
         align-items: center;
         margin-bottom: 1px;
-        span{
+        span {
           flex: 1;
           margin-left: 21px;
           color: #282828;
         }
-        input{
+        input {
           flex: 8;
           margin-left: 10px;
           font-size: 16px;
@@ -176,26 +308,28 @@
       }
     }
   }
+
   // footer
-  .footer{
+  .footer {
     display: flex;
     margin-top: 30px;
     margin-bottom: 30px;
-    .footerBtn{
+    .footerBtn {
       padding: 0 30px;
       width: 100%;
       flex: 1;
       display: flex;
       justify-content: center;
       align-items: center;
-      .mint-button--normal{
+      .mint-button--normal {
         flex: 1;
-        background:-webkit-gradient(linear, -30% 50%, 30% -50%, from(#ed1204), to(#ed3806));
+        background: -webkit-gradient(linear, -30% 50%, 30% -50%, from(#ed1204), to(#ed3806));
         color: white;
       }
     }
   }
-  .mask{
+
+  .mask {
     width: 220px;
     padding: 30px 50px;
     display: flex;
@@ -203,12 +337,13 @@
     align-items: center;
     flex-direction: column;
     border-radius: 5px;
-    .msgTip{
+    .msgTip {
       margin-bottom: 20px;
       color: #ed1204;
       font-size: 20px;
     }
   }
+
   .footerBtn {
     width: 100%;
     flex: 1;
@@ -217,24 +352,25 @@
     align-items: center;
     .mint-button--normal {
       flex: 1;
-      background:-webkit-gradient(linear, -30% 50%, 30% -50%, from(#ed1204), to(#ed3806));
+      background: -webkit-gradient(linear, -30% 50%, 30% -50%, from(#ed1204), to(#ed3806));
       color: white;
       height: 42px;
       font-size: 16px;
     }
   }
-  .loading{
+
+  .loading {
     padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    .isLoading{
+    .isLoading {
       margin-bottom: 10px;
     }
   }
 
-  div#div1{
+  div#div1 {
     height: calc(100% - 167px);
   }
 </style>
