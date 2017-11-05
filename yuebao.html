@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .abox {
+            background-color: red;
+        }
+
+        .fade-enter {
+            opacity: 0;
+        }
+
+        .fade-leave-active {
+            opacity: 0;
+        }
+
+        .fade-enter-active,
+        .fade-leave-active {
+            transition: all 1s ease;
+        }
+
+        #table {
+            text-align: center;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        #header {
+            overflow: hidden;
+        }
+
+        #body {
+            height: 310px;
+            overflow-x: hidden;
+        }
+
+        #body::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
+        .left {
+            float: left;
+            width: 20%;
+            /* background-color: blue; */
+        }
+
+        .left p {
+            border-width: 1px 1px 0 1px;
+            border-color: #ccc;
+            border-style: solid;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        #body .left p:last-of-type {
+            border-width: 1px;
+        }
+
+        .content {
+            float: left;
+            width: 80%;
+            overflow: auto;
+            /* background-color: pink; */
+        }
+
+        .content::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
+        .column-content {
+            width: 1000px;
+        }
+
+        .content p span {
+            display: inline-block;
+            width: 100px;
+            box-sizing: border-box;
+            border-width: 1px 0 0 1px;
+            border-color: #ccc;
+            border-style: solid;
+        }
+
+        .content p span:last-of-type {
+            border-right-width: 1px;
+        }
+
+        #body .content p:last-of-type span {
+            border-bottom-width: 1px;
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+    <div id="table">
+        <div id="header">
+            <div class="left">
+                <p>表头</p>
+            </div>
+            <div class="content">
+                <div class="column-content">
+                    <p>
+                        <span v-for="detail in mockData.list[0].record">考勤</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="body">
+            <div class="left">
+                <p v-for="item in mockData.list">{{item.name}}</p>
+            </div>
+
+
+            <div class="content">
+                <div class="column-content">
+                    <p v-for="item in mockData.list">
+                        <span v-for="detail in item.record">{{detail}}</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="./vue.js"></script>
+<script type="text/javascript" src="./node_modules/mockjs/dist/mock.js"></script>
+<script>
+    const vm = new Vue(
+        {
+            el: '.box',
+            data: {
+                mockData: Mock.mock({
+                    "list|20-30": [
+                        {
+                            "name": "@cname",
+                            "record": [1, 2, 1, 1, 2, 2, 2, 1, 1, 1]
+                        }
+                    ]
+                })
+            },
+            created() {
+                //   this.$http.get('http://g.cn').then(rensponse => {
+                //       console.log(response)
+                //   }, err => {
+                //       console.log(err)
+                //   })
+            },
+            mounted() {
+                this.addListener('.content', {
+                    "callBack": [this.con1, this.con2],
+                    "event": ["scroll", "scroll"]
+                });
+
+            },
+            beforeUpdate() {
+                alert('更新前')
+            },
+            updated() {
+                this.$nextTick(
+                    alert('更新猴')
+                )
+            },
+            methods: {
+                touchevent() {
+                    console.log(1)
+                },
+                con1() {
+                    document.querySelectorAll('.content')[1].removeEventListener('scroll', this.con2);
+                    const slt = document.querySelector('.content').scrollLeft;
+                    document.querySelectorAll('.content')[1].scrollLeft = slt;
+
+                    clearTimeout(this.timer1);
+                    this.timer1 = setTimeout(() => {
+                        document.querySelectorAll('.content')[1].addEventListener('scroll', this.con2);
+                },
+                    50
+                )
+                    ;
+                },
+                con2() {
+                    document.querySelector('.content').removeEventListener('scroll', this.con1);
+                    const slt = document.querySelectorAll('.content')[1].scrollLeft;
+                    document.querySelector('.content').scrollLeft = slt;
+
+                    clearTimeout(this.timer2);
+                    this.timer2 = setTimeout(() => {
+                        document.querySelector('.content').addEventListener('scroll', this.con1);
+                },
+                    50
+                )
+                    ;
+                },
+                addListener(selector, option) {
+                    // 给dom绑定事件,以及回掉函数
+                    const scrollDOM = document.querySelectorAll(selector);
+                    for (let i = 0, len = scrollDOM.length; i < len; i++) {
+                        scrollDOM[i].addEventListener(option.event[i], option.callBack[i]);
+                    }
+                }
+            },
+        }
+    )
+
+</script>
+</body>
+</html>
