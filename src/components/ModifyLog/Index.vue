@@ -173,6 +173,7 @@
         this.popupVisible = true;
       },
       onValuesChange(picker, values){
+
         if (values[0]){
           this.storesNameIn = values[0];
         }
@@ -198,8 +199,10 @@
         }
         // 确认
         else if (value == 2){
-          this.storesName = this.storesNameIn;
-          // 在这里发送网络请求
+          if (this.storesNameIn != ''){
+            this.storesName = this.storesNameIn;
+            // 在这里发送网络请求
+          }
         }
 
         // 退出蒙版

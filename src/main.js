@@ -7,6 +7,8 @@ import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import './utils/DataFormat.js'
 import 'element-ui/lib/theme-default/index.css'
+import FastClick from 'fastclick'
+
 import Axios from 'axios'
 // import element from 'element-ui'
 import { Radio,Input } from 'element-ui'
@@ -14,6 +16,11 @@ import { Radio,Input } from 'element-ui'
 
 Vue.prototype.$http = Axios;
 
+if ('addEventListener' in document) {
+  document.addEventListener('DOMContentLoaded', function() {
+    FastClick.attach(document.body);
+  }, false);
+}
 
 // Vue.use(element);
 Vue.use(Radio);

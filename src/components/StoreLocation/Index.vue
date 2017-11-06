@@ -124,58 +124,6 @@
     },
     mounted() {
 
-      console.log(wx);
-
-      /*var jsApiList = [
-        'openLocation','getLocation','checkJsApi'
-      ];
-      wx.config({
-        debug: true,
-        appId: "wx9fad84f36b3a2463",
-        nonceStr: "SACT8vJLRh9DFdLs",
-        timestamp: 1509703238,
-        signature: "b401b5c0993604e6388006b011ed5ca837c1ba6f",
-        jsApiList: jsApiList
-      });
-
-      // 检测API是否可用
-      wx.ready(function(){
-
-        console.log('1');
-
-        wx.checkJsApi({
-          jsApiList: [
-            'getLocation'
-          ],
-          success: function (res) {
-            if (res.checkResult.getLocation == false) {
-              alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
-              return;
-            }
-          }
-        });
-
-        wx.getLocation({
-          type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-          success: function (res) {
-            console.log(res);
-            var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-            var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-            var speed = res.speed; // 速度，以米/每秒计
-            var accuracy = res.accuracy; // 位置精度
-
-            wx.openLocation({
-              latitude: latitude, // 纬度，浮点数，范围为90 ~ -90
-              longitude: longitude, // 经度，浮点数，范围为180 ~ -180。
-              name: '', // 位置名
-              address: '', // 地址详情说明
-              scale: 20, // 地图缩放级别,整形值,范围从1~28。默认为最大
-              infoUrl: '' // 在查看位置界面底部显示的超链接,可点击跳转
-            });
-          }
-        });
-      });*/
-
       this.check();
 
       requestStoresInitialize().then((res) => {
@@ -193,7 +141,6 @@
 
           // 配置微信
           wx.config({
-            debug: true,
             appId: appId,
             nonceStr: nonceStr,
             timestamp: timestamp,
@@ -202,14 +149,6 @@
               'openLocation', 'getLocation', 'checkJsApi'
             ]
           });
-
-          /*wx.config({
-            appId: "wx9fad84f36b3a2463",
-            nonceStr: "SACT8vJLRh9DFdLs",
-            timestamp: 1509703238,
-            signature: "b401b5c0993604e6388006b011ed5ca837c1ba6f",
-            jsApiList: jsApiList
-          });*/
 
           // 检测API是否可用
           wx.ready(function () {
@@ -233,6 +172,10 @@
               type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
               success: function (res) {
 
+                for(var item in res){
+                  alert(res[item]);
+                }
+
                 alert('成功获取到坐标');
 
                 var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
@@ -240,8 +183,6 @@
                 var speed = res.speed; // 速度，以米/每秒计
                 var accuracy = res.accuracy; // 位置精度
 
-                alert(latitude);
-                alert(longitude);
 
 
                 wx.openLocation({
