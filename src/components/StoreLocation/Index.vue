@@ -198,7 +198,9 @@
             nonceStr: nonceStr,
             timestamp: timestamp,
             signature: signature,
-            jsApiList: jsApiList
+            jsApiList: [
+              'openLocation', 'getLocation', 'checkJsApi'
+            ]
           });
 
           /*wx.config({
@@ -219,6 +221,7 @@
                 'getLocation'
               ],
               success: function (res) {
+                alert(111);
                 if (res.checkResult.getLocation == false) {
                   alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
                   return;
