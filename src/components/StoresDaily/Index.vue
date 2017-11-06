@@ -2,9 +2,9 @@
   <!-- 门店日报 -->
   <div v-wechat-title="$route.meta.title" class="backColor" id="storeDaily">
     <div class="top">
-      <div class="topBtn">
+      <div class="topBtn" @click="openPicker">
         <img :src="'./static/storesDaily/data.png'" width="24" height="24" style="margin-right: 20px">
-        <span @click="openPicker">{{pickerData}}</span>
+        <span>{{pickerData}}</span>
         <span>
           <img :src="'./static/storesDaily/xiala.png'" alt="" style="width: 14px;height: 10px">
         </span>
@@ -17,7 +17,7 @@
         <div class="title">考勤</div>
       </div>
 
-      <div style="overflow-y: scroll;height: 400px">
+      <div style="overflow-y: scroll;height: 90%;">
         <div class="middleMsg" v-for="(item,index) in list" :key="index">
           <div class="titleName">{{item.name}}</div>
           <div class="titleMsg" @click="open(index)">
@@ -51,14 +51,15 @@
 
     <mt-popup
       v-model="popupVisible"
+      :closeOnClickModal="false"
       >
       <div class="mask">
         <div class="content">
-          <mt-button class="item" @click.native="selected(index)" :class="{'itemR' : value.selected === true}" v-for="(value, index) in detail" :key="index" >{{value.msg}}</mt-button>
+          <mt-button class="item" @click.native="selected(index,value.msg)" :class="{'itemR' : value.selected === true}" v-for="(value, index) in detail" :key="index" >{{value.msg}}</mt-button>
         </div>
 
         <div class="maskBtn">
-          <mt-button @click="sure">确定</mt-button>
+          <mt-button @click="sure()">确定</mt-button>
         </div>
       </div>
     </mt-popup>
@@ -66,18 +67,19 @@
 </template>
 <script>
 
-  import Vue from 'vue'
+/*  import Vue from 'vue'
 
   //过滤器
   Vue.filter('FormatDate', function(item) {
     var str = "";
     item.forEach(function (value, index) {
+      console.log(1);
       str = value + '+' + str;
     });
 
     str = str.substring(0, str.lastIndexOf('+'));
     return str;
-  });
+  });*/
 
 
   export default {
@@ -87,6 +89,8 @@
         popupVisible: false,   // 控制蒙版的显隐
         pickerValue: "",
         pickerData: new Date().Format("yyyy-MM-dd"),
+        index: 0,               // 记录当前被选中cell
+        value: [],              // 记录当前被选中
         list: [
           {
             name: "程俊文",
@@ -116,7 +120,7 @@
           {
             name: "程俊文",
             detail: ["未签到"],
-            type: 3         // 黑色
+            type: 2         // 橙色
           },
           {
             name: "程俊文",
@@ -131,7 +135,7 @@
           {
             name: "程俊文",
             detail: ["未签到"],
-            type: 3         // 黑色
+            type: 2         // 橙色
           },
           {
             name: "程俊文",
@@ -142,17 +146,12 @@
             name: "程俊文",
             detail: ["未签到"],
             type: 3         // 黑色
-          },
-          {
-            name: "程俊文",
-            detail: ["未签到"],
-            type: 3         // 黑色
-          },
+          }
         ],
         detail: [
           {
             msg: "未签到",
-            selected: true
+            selected: false
           },
           {
             msg: "已签到",
@@ -216,13 +215,100 @@
     },
     methods: {
       open(index){
+        var _this = this;
         this.popupVisible = true;
+
+        // 记录当前被选中index
+        this.index = index;
+        this.detail.forEach(function (value, count) {
+          if (_this.list[index].detail.indexOf(value.msg) >= 0){
+            value.selected = true;
+          }
+        })
+
       },
-      selected(index){
-        this.detail[index].selected = !this.detail[index].selected;
+      selected(count, value){
+
+        this.detail[count].selected = !this.detail[count].selected;
+
       },
       sure(){
+
+        var _this = this;
+
         this.popupVisible = false;
+
+        this.detail.forEach(function (value) {
+          if (value.selected){
+            _this.value.push(value.msg);
+          }
+        });
+
+        this.list[_this.index].detail = this.value;
+        this.value = [];
+
+        this.detail = [
+          {
+            msg: "未签到",
+            selected: false
+          },
+          {
+            msg: "已签到",
+            selected: false
+          },
+          {
+            msg: "早退",
+            selected: false
+          },
+          {
+            msg: "已签退",
+            selected: false
+          },
+          {
+            msg: "休息",
+            selected: false
+          },
+          {
+            msg: "补休",
+            selected: false
+          },
+          {
+            msg: "事假",
+            selected: false
+          },
+          {
+            msg: "病假",
+            selected: false
+          },
+          {
+            msg: "旷工",
+            selected: false
+          },
+          {
+            msg: "年假",
+            selected: false
+          },
+          {
+            msg: "婚嫁",
+            selected: false
+          },
+          {
+            msg: "产假",
+            selected: false
+          },
+          {
+            msg: "陪产假",
+            selected: false
+          },
+          {
+            msg: "工伤",
+            selected: false
+          },
+          {
+            msg: "丧假",
+            selected: false
+          }
+        ]
       },
       openPicker() {
         this.$refs.picker.open();
@@ -271,7 +357,7 @@
     // table
     .middle{
       width: 100%;
-      height: 450px;
+      height: 70%;
       .middleTable{
         display: flex;
         background-color: rgb(245,245,245);

@@ -48,7 +48,7 @@
     >
       <div class="loading">
         <mt-spinner type="fading-circle" class="isLoading"></mt-spinner>
-        <div>加载数据中...</div>
+        <div>{{pupupMsg}}</div>
       </div>
     </mt-popup>
 
@@ -60,6 +60,7 @@
   export default {
     data() {
       return {
+        pupupMsg: "加载数据中...",
         loading: false,
         popupSubmit: false,
         msgTip: "保存成功",
@@ -75,8 +76,17 @@
         this.popupSubmit = false;
       },
       check() {
-        this.loading = true;
         var _this = this;
+        wx.openLocation({
+          latitude: _this.latitude, // 纬度，浮点数，范围为90 ~ -90
+          longitude: _this.longitude, // 经度，浮点数，范围为180 ~ -180。
+          name: 'xxx', // 位置名
+          address: 'xxxx.xxx', // 地址详情说明
+          scale: 20, // 地图缩放级别,整形值,范围从1~28。默认为最大
+          infoUrl: 'http://www.baidu.com' // 在查看位置界面底部显示的超链接,可点击跳转
+        });
+
+        /*var _this = this;
         // 百度地图API功能
         var map = new BMap.Map("div1");
         var point = new BMap.Point(116.331398, 30.897445);
@@ -119,15 +129,40 @@
           _this.latitude = r.latitude;
           _this.longitude = r.longitude;
           _this.loading = false;
-        }, {enableHighAccuracy: true})
+        }, {enableHighAccuracy: true})*/
+      },
+      getCur(){
+        this.loading = true;
+        this.pupupMsg = "加载数据中...";
+        var _this = this;
+
+        wx.getLocation({
+          type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+          success: function (res) {
+
+            _this.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+            _this.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+            var speed = res.speed; // 速度，以米/每秒计
+            var accuracy = res.accuracy; // 位置精度
+
+            _this.pupupMsg = "获取位置成功!";
+
+            setTimeout(function () {
+              _this.loading = false;
+            },500)
+          },
+          error(err){
+            _this.pupupMsg = "获取位置失败!";
+          }
+        });
       }
     },
     mounted() {
 
-      this.check();
+      this.loading = true;
+      var _this = this;
 
       requestStoresInitialize().then((res) => {
-        console.log(res);
         if (res.code == 1) {
           var appId = res.data.signpackage.appId;
           var nonceStr = res.data.signpackage.nonceStr;
@@ -137,7 +172,7 @@
             'openLocation', 'getLocation', 'checkJsApi'
           ];
 
-          alert('请求成功啦');
+          // alert('请求成功啦');
 
           // 配置微信
           wx.config({
@@ -153,14 +188,13 @@
           // 检测API是否可用
           wx.ready(function () {
 
-            alert('来到这个地方说明wx准备好了');
+            // alert('来到这个地方说明wx准备好了')
 
             wx.checkJsApi({
               jsApiList: [
                 'getLocation'
               ],
               success: function (res) {
-                alert(111);
                 if (res.checkResult.getLocation == false) {
                   alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
                   return;
@@ -172,35 +206,25 @@
               type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
               success: function (res) {
 
-                for(var item in res){
-                  alert(res[item]);
-                }
-
-                alert('成功获取到坐标');
-
-                var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-                var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                _this.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                _this.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
                 var speed = res.speed; // 速度，以米/每秒计
                 var accuracy = res.accuracy; // 位置精度
 
+                _this.pupupMsg = "获取位置成功!";
 
-
-                wx.openLocation({
-                  latitude: latitude, // 纬度，浮点数，范围为90 ~ -90
-                  longitude: longitude, // 经度，浮点数，范围为180 ~ -180。
-                  name: '', // 位置名
-                  address: '', // 地址详情说明
-                  scale: 20, // 地图缩放级别,整形值,范围从1~28。默认为最大
-                  infoUrl: '' // 在查看位置界面底部显示的超链接,可点击跳转
-                });
+                setTimeout(function () {
+                  _this.loading = false;
+                },500)
+              },
+              error(err){
+                _this.pupupMsg = "获取位置失败!";
               }
             });
-
           });
-
         }
       }).catch((error) => {
-
+        alert(error);
       })
     }
   }

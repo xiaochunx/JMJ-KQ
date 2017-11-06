@@ -101,7 +101,7 @@
     border-top: 10px solid rgb(245,245,245);
     padding: 0 40px;
     background-color: #fff;
-    height: 450px;
+    height: 65%;
     display: flex;
     /*justify-content: center;*/
     align-items: center;

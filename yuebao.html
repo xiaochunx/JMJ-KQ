@@ -134,6 +134,7 @@
         </div>
     </div>
 </div>
+
 <script src="./vue.js"></script>
 <script type="text/javascript" src="./node_modules/mockjs/dist/mock.js"></script>
 <script>
@@ -163,14 +164,6 @@
                     "event": ["scroll", "scroll"]
                 });
 
-            },
-            beforeUpdate() {
-                alert('更新前')
-            },
-            updated() {
-                this.$nextTick(
-                    alert('更新猴')
-                )
             },
             methods: {
                 touchevent() {

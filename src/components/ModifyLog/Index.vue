@@ -1,16 +1,16 @@
 <template>
   <div v-wechat-title="$route.meta.title" id="monthlyReport">
     <div class="top">
-      <div class="topBtn">
+      <div class="topBtn" @click="openPicker">
         <img :src="'./static/storesDaily/data.png'" width="24" height="24" style="margin-right: 20px">
-        <span @click="openPicker">{{pickerData}}</span>
+        <span>{{pickerData}}</span>
         <span>
           <img :src="'./static/storesDaily/xiala.png'" alt="" style="width: 14px;height: 10px">
         </span>
       </div>
-      <div class="topBtn" style="margin-left: 10px">
+      <div class="topBtn" style="margin-left: 10px" @click="openPopup">
         <img :src="'./static/storesDaily/dian.png'" width="24" height="24" style="margin-right: 20px">
-        <span @click="openPopup">{{storesName}}</span>
+        <span>{{storesName}}</span>
         <span>
           <img :src="'./static/storesDaily/xiala.png'" alt="" style="width: 14px;height: 10px">
         </span>
@@ -20,7 +20,7 @@
       <div class="middleTable">
         <div class="title" v-for="(value,index) in title" :key="index">{{value}}</div>
       </div>
-      <div style="overflow-y: scroll;height:500px">
+      <div style="overflow-y: scroll;height:450px">
         <div class="middleMsg" v-for="(item,index) in list" :key="index">
           <div class="titleName">{{item.name}}</div>
           <div class="titleName">{{item.beforeChange}}</div>
@@ -301,8 +301,8 @@
       text-align: center;
       border-bottom: 1px solid gainsboro;
       color: skyblue;
-      height: 30px;
-      line-height: 30px;
+      height: 40px;
+      line-height: 40px;
     }
   }
 
