@@ -35,7 +35,7 @@
       </div>
     </div>-->
 
-    <div class="box">
+    <!--<div class="box">
       <div id="table">
         <div id="header">
           <div class="left">
@@ -67,6 +67,58 @@
                 <img :src="'./static/storesDaily/edit.png'" width="15" height="15" v-show="flag == false">
                 </span>
               </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>-->
+
+    <div class="box">
+      <div id="table">
+        <div id="header">
+          <div class="left">
+            <div class="change" @click="change">
+              <img :src="'./static/storesDaily/qiehuan.png'" alt="" style="width: 25px;height: 25px;">
+            </div>
+          </div>
+          <div class="content">
+            <div class="column-content">
+              <p>
+                <span v-for="detail in rowList" class="dataTime">{{detail}}</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div id="body">
+          <div class="left">
+            <p v-for="(item,index) in list" :class="{'total': item.type == 4}">
+              {{item.name}}
+            </p>
+          </div>
+
+
+          <div class="content">
+            <div class="column-content contentMsg">
+              <div v-for="(value,index1) in list">
+                <span v-for="(item,index) in value.detail" style="width: 94px;display: inline-block" @click="open(index1,index)">
+                  <span v-if="item.type == 0" style="color: #ed1204" class="contentC">{{item.msg | FormatDate}}
+                    <img :src="'./static/storesDaily/edit.png'" width="15" height="15" style="margin-left: 5px">
+                  </span>
+                  <span v-if="item.type == 1" style="color: deepskyblue"
+                        class="contentC">{{item.msg | FormatDate}}
+                    <img :src="'./static/storesDaily/edit.png'" width="15" height="15" style="margin-left: 5px">
+                  </span>
+                  <span v-if="item.type == 2" style="color: lightcoral"
+                        class="contentC">{{item.msg | FormatDate}}
+                    <img :src="'./static/storesDaily/edit.png'" width="15" height="15" style="margin-left: 5px">
+                  </span>
+                  <span v-if="item.type == 3" style="" class="contentC">{{item.msg | FormatDate}}
+                    <img :src="'./static/storesDaily/edit.png'" width="15" height="15" style="margin-left: 5px">
+                  </span>
+
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -132,69 +184,640 @@
         list: [
           {
             name: "程俊文",
-            detail: ["已签到", "未签到"],
-            type: 0         // 红色
+            detail: [
+              {
+                msg: ["已签到", "未签"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+            ],
           },
           {
             name: "程俊文",
-            detail: ["已签到"],
-            type: 1         // 蓝色
+            detail: [
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+            ],
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
-            type: 2         // 橙色
+            detail: [
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+            ],
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
-            type: 3         // 黑色
+            detail: [
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+            ],
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
-            type: 3         // 黑色
+            detail: [
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+            ],
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
-            type: 3         // 黑色
+            detail: [
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+            ],
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
-            type: 3         // 黑色
+            detail: [
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+            ],
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
-            type: 3         // 黑色
+            detail: [
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+            ],
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
-            type: 3         // 黑色
+            detail: [
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+            ],
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
-            type: 3         // 黑色
+            detail: [
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+            ],
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
-            type: 3         // 黑色
+            detail: [
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+            ],
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
-            type: 3         // 黑色
+            detail: [
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+            ],
+          },
+          {
+            name: "程俊文",
+            detail: [
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+            ],
+          },
+          {
+            name: "程俊文",
+            detail: [
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 0
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 1
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 2
+              },
+              {
+                msg: ["fs", "未签到"],
+                type: 3
+              },
+            ],
           },
         ],
+        rowList: ['2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12'],
         detail: [
           {
             msg: "未签到",
-            selected: true
+            selected: false
           },
           {
             msg: "已签到",
@@ -266,7 +889,9 @@
       }
     },
     methods: {
-      open(index) {
+      open(i,j) {
+        console.log(i);
+        console.log(j);
         if (this.flag){
 
         }else {
@@ -478,6 +1103,7 @@
   #body {
     height: 310px;
     overflow-x: hidden;
+    font-size: 14px;
   }
 
   #body::-webkit-scrollbar {
@@ -540,6 +1166,7 @@
 
   .contentMsg {
     overflow-y: scroll;
+    font-size: 12px;
     p:first-of-type {
       span {
         border-top: none;
@@ -588,5 +1215,16 @@
 
   .total{
     color: orange;
+  }
+
+  .contentC {
+    width: 94px;
+    height: 45px;
+    line-height: 45px;
+    border-right: 1px solid gainsboro;
+    border-bottom: 1px solid gainsboro;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 </style>

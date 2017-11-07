@@ -1,6 +1,6 @@
 <template>
   <div v-wechat-title="$route.meta.title" id="statistics">
-    
+
     <div class="top">
       <div class="topBtn" @click="openPicker">
         <img :src="'./static/storesDaily/data.png'" width="24" height="24" style="margin-right: 20px">
@@ -45,7 +45,7 @@
 
           <div class="content">
             <div class="column-content contentMsg">
-              <div v-for="(value,index1) in list" @click="open(index1)">
+              <div v-for="(value,index1) in list">
                 <span v-for="(item,index) in value.detail" style="width: 94px;display: inline-block">
                   <span v-if="item.type == 0" style="color: #ed1204" class="contentC">{{item.msg | FormatDate}}</span>
                   <span v-if="item.type == 1" style="color: deepskyblue"
@@ -60,7 +60,6 @@
         </div>
       </div>
     </div>
-
 
     <mt-popup
       v-model="popupVisible"
