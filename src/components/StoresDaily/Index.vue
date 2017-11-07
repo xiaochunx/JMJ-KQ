@@ -240,11 +240,11 @@
 
         this.detail.forEach(function (value) {
           if (value.selected){
-            _this.value.push(value.msg);
+            _this.value.splice(0,0,value.msg);
           }
         });
 
-        this.list[_this.index].detail = this.value;
+        this.list[_this.index].state = this.value;
         this.value = [];
 
         setTimeout(function () {
