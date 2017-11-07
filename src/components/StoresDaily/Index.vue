@@ -21,10 +21,10 @@
         <div class="middleMsg" v-for="(item,index) in list" :key="index">
           <div class="titleName">{{item.name}}</div>
           <div class="titleMsg" @click="open(index)">
-            <span v-if="item.type == 0" style="color: #ed1204">{{item.detail | FormatDate}}</span>
-            <span v-if="item.type == 1" style="color: deepskyblue">{{item.detail | FormatDate}}</span>
-            <span v-if="item.type == 2" style="color: lightcoral">{{item.detail | FormatDate}}</span>
-            <span v-if="item.type == 3" style="">{{item.detail | FormatDate}}</span>
+            <span v-if="item.type == 0" style="color: #ed1204">{{item.state | FormatDate}}</span>
+            <span v-if="item.type == 1" style="color: deepskyblue">{{item.state | FormatDate}}</span>
+            <span v-if="item.type == 2" style="color: lightcoral">{{item.state | FormatDate}}</span>
+            <span v-if="item.type == 3" style="">{{item.state | FormatDate}}</span>
             <img :src="'./static/storesDaily/edit.png'" width="15" height="15" style="margin-left: 5px">
           </div>
         </div>
@@ -63,30 +63,31 @@
         </div>
       </div>
     </mt-popup>
+
+
+
+    <mt-popup
+      v-model="popupSubmit">
+      <div class="maskT">
+        <div class="msgTip">{{msgTip}}</div>
+        <div class="footerBtn">
+          <mt-button @click="sureBtn">确认</mt-button>
+        </div>
+      </div>
+    </mt-popup>
   </div>
 </template>
 <script>
 
-/*  import Vue from 'vue'
-
-  //过滤器
-  Vue.filter('FormatDate', function(item) {
-    var str = "";
-    item.forEach(function (value, index) {
-      console.log(1);
-      str = value + '+' + str;
-    });
-
-    str = str.substring(0, str.lastIndexOf('+'));
-    return str;
-  });*/
-
+  import { storesDailyInitialize } from '../../api/api.js'
 
   export default {
 
     data(){
       return{
         popupVisible: false,   // 控制蒙版的显隐
+        popupSubmit: false,                // 提交弹窗
+        msgTip: "",                        // 提示信息
         pickerValue: "",
         pickerData: new Date().Format("yyyy-MM-dd"),
         index: 0,               // 记录当前被选中cell
@@ -94,57 +95,57 @@
         list: [
           {
             name: "程俊文",
-            detail: ["已签到","未签到"],
+            state: ["已签到","未签到"],
             type: 0         // 红色
           },
           {
             name: "程俊文",
-            detail: ["已签到"],
+            state: ["已签到"],
             type: 1         // 蓝色
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
+            state: ["未签到"],
             type: 2         // 橙色
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
+            state: ["未签到"],
             type: 3         // 黑色
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
+            state: ["未签到"],
             type: 3         // 黑色
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
+            state: ["未签到"],
             type: 2         // 橙色
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
+            state: ["未签到"],
             type: 3         // 黑色
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
+            state: ["未签到"],
             type: 3         // 黑色
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
+            state: ["未签到"],
             type: 2         // 橙色
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
+            state: ["未签到"],
             type: 3         // 黑色
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
+            state: ["未签到"],
             type: 3         // 黑色
           }
         ],
@@ -220,17 +221,16 @@
 
         // 记录当前被选中index
         this.index = index;
+
         this.detail.forEach(function (value, count) {
-          if (_this.list[index].detail.indexOf(value.msg) >= 0){
+          if (_this.list[index].state.indexOf(value.msg) >= 0){
             value.selected = true;
           }
         })
 
       },
       selected(count, value){
-
         this.detail[count].selected = !this.detail[count].selected;
-
       },
       sure(){
 
@@ -247,78 +247,110 @@
         this.list[_this.index].detail = this.value;
         this.value = [];
 
-        this.detail = [
-          {
-            msg: "未签到",
-            selected: false
-          },
-          {
-            msg: "已签到",
-            selected: false
-          },
-          {
-            msg: "早退",
-            selected: false
-          },
-          {
-            msg: "已签退",
-            selected: false
-          },
-          {
-            msg: "休息",
-            selected: false
-          },
-          {
-            msg: "补休",
-            selected: false
-          },
-          {
-            msg: "事假",
-            selected: false
-          },
-          {
-            msg: "病假",
-            selected: false
-          },
-          {
-            msg: "旷工",
-            selected: false
-          },
-          {
-            msg: "年假",
-            selected: false
-          },
-          {
-            msg: "婚嫁",
-            selected: false
-          },
-          {
-            msg: "产假",
-            selected: false
-          },
-          {
-            msg: "陪产假",
-            selected: false
-          },
-          {
-            msg: "工伤",
-            selected: false
-          },
-          {
-            msg: "丧假",
-            selected: false
-          }
-        ]
+        setTimeout(function () {
+          _this.detail = [
+            {
+              msg: "未签到",
+              selected: false
+            },
+            {
+              msg: "已签到",
+              selected: false
+            },
+            {
+              msg: "早退",
+              selected: false
+            },
+            {
+              msg: "已签退",
+              selected: false
+            },
+            {
+              msg: "休息",
+              selected: false
+            },
+            {
+              msg: "补休",
+              selected: false
+            },
+            {
+              msg: "事假",
+              selected: false
+            },
+            {
+              msg: "病假",
+              selected: false
+            },
+            {
+              msg: "旷工",
+              selected: false
+            },
+            {
+              msg: "年假",
+              selected: false
+            },
+            {
+              msg: "婚嫁",
+              selected: false
+            },
+            {
+              msg: "产假",
+              selected: false
+            },
+            {
+              msg: "陪产假",
+              selected: false
+            },
+            {
+              msg: "工伤",
+              selected: false
+            },
+            {
+              msg: "丧假",
+              selected: false
+            }
+          ]
+        },500)
       },
       openPicker() {
         this.$refs.picker.open();
       },
       handleConfirm(){
         this.pickerData = new Date(this.pickerValue).Format("yyyy-MM-dd ");
+      },
+      sureBtn(){
+        this.popupSubmit = false;
       }
     },
-    computed: {
+    mounted(){
+      var _this = this;
 
+      var params = {
+        data: _this.pickerData
+      };
+
+      var arr = [];
+
+      storesDailyInitialize(params).then((res) => {
+        _this.msgTip = res.msg;
+        if (res.code == 1){
+          _this.list = res.data.list;
+
+          res.data.base_state.forEach(function (value, index) {
+            arr.push({
+              msg: value,
+              selected: false
+            })
+          });
+
+          _this.detail = arr;
+
+        }else {
+          _this.popupSubmit = true;
+        }
+      }).catch((error) => {
+        console.log(error);
+      })
     }
   }
 </script>
@@ -453,4 +485,6 @@
   .picker-slot{
     overflow-y: scroll;
   }
+
+
 </style>

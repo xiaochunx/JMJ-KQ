@@ -23,57 +23,61 @@ time, mark, audio, video {
   font: inherit;
   vertical-align: baseline;
 }
+
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
   display: block;
 }
+
 body {
   line-height: 1;
 }
+
 ol, ul {
   list-style: none;
 }
+
 blockquote, q {
   quotes: none;
 }
+
 blockquote:before, blockquote:after,
 q:before, q:after {
   content: '';
   content: none;
 }
+
 table {
   border-collapse: collapse;
   border-spacing: 0;
 }
 
-html{
+html {
   height: 100%;
   width: 100%;
 }
 
-body,#app{
+body, #app {
   width: 100%;
   height: 100%;
 }
 
-
-
-body{
-  background-color: rgb(245,245,245);
+body {
+  background-color: rgb(245, 245, 245);
 }
 
 /*充值input*/
-input{
+input {
   border: none;
   /*background-color: rgb(245,245,245);*/
   padding: 0;
-  margin:0;
+  margin: 0;
   height: 26px;
   /*padding: 10px 0;!*当时解决输入框光标顶满input框的问题是这么解决的 如果设置了行高就会顶满没有行高的话光标高度=文字的font-size *!*/
   outline: none;
   /*padding-left: 20px;*/
-  color:#6d6d6d;
+  color: #6d6d6d;
   /*-webkit-appearance:none; !*去除系统默认的样式*!*/
   /*-webkit-tap-highlight-color: rgba(0, 0, 0, 0);   !* 点击去除高亮的颜色*!*/
 }
@@ -82,25 +86,26 @@ input{
 :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
   color: gainsboro;
 }
+
 ::-moz-placeholder { /* Mozilla Firefox 19+ */
   color: gainsboro;
 }
+
 input:-ms-input-placeholder,
 textarea:-ms-input-placeholder {
   color: gainsboro;
 }
+
 input::-webkit-input-placeholder,
 textarea::-webkit-input-placeholder {
   color: gainsboro;
 }
 
-
-.mint-popup{
+.mint-popup {
   border-radius: 6px;
 }
 
-
-.loading{
+.loading {
   padding: 20px;
   display: flex;
   justify-content: center;
@@ -108,7 +113,8 @@ textarea::-webkit-input-placeholder {
   flex-direction: column;
 }
 
-.isLoading{
+.isLoading {
   margin-bottom: 10px;
 }
+
 
