@@ -173,7 +173,6 @@
         this.popupVisible = true;
       },
       onValuesChange(picker, values){
-
         if (values[0]){
           this.storesNameIn = values[0];
         }

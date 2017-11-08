@@ -9,69 +9,6 @@
         </span>
       </div>
     </div>
-    <!--<div class="middle">
-      <div class="middleTable">
-        <div class="title change">
-          <img :src="'./static/storesDaily/qiehuan.png'" alt="" style="width: 25px;height: 25px;">
-        </div>
-        <div class="title">考勤</div>
-        <div class="title">考勤</div>
-        <div class="title">考勤</div>
-      </div>
-
-      <div style="overflow-y: scroll;height: 400px">
-        <div class="middleMsg" v-for="(item,index) in list" :key="index">
-          <div class="titleName">{{item.name}}</div>
-          <div class="titleMsg" @click="open(index)">
-            <span v-if="item.type == 0" style="color: #ed1204">{{item.detail | FormatDate}}</span>
-            <span v-if="item.type == 1" style="color: deepskyblue">{{item.detail | FormatDate}}</span>
-            <span v-if="item.type == 2" style="color: lightcoral">{{item.detail | FormatDate}}</span>
-            <span v-if="item.type == 3" style="">{{item.detail | FormatDate}}</span>
-            <img :src="'./static/storesDaily/edit.png'" width="15" height="15" style="margin-left: 5px">
-          </div>
-          <div class="titleName">{{item.name}}</div>
-          <div class="titleName">{{item.name}}</div>
-        </div>
-      </div>
-    </div>-->
-
-    <!--<div class="box">
-      <div id="table">
-        <div id="header">
-          <div class="left">
-            <div class="change" @click="change">
-              <img :src="'./static/storesDaily/qiehuan.png'" alt="" style="width: 25px;height: 25px;">
-            </div>
-          </div>
-          <div class="content">
-            <div class="column-content">
-              <p>
-                <span v-for="detail in mockData.list[0].record" class="dataTime">2017-11-12</span>
-              </p>
-            </div>
-          </div>
-        </div>
-
-
-        <div id="body">
-          <div class="left">
-            <p v-for="item in mockData.list">{{item.name}}</p>
-            <p class="total" v-show="flag == true">总计</p>
-          </div>
-
-
-          <div class="content">
-            <div class="column-content contentMsg">
-              <p v-for="(item,index) in mockData.list" @click="open(index)">
-                <span v-for="detail in item.record">{{detail}}
-                <img :src="'./static/storesDaily/edit.png'" width="15" height="15" v-show="flag == false">
-                </span>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>-->
 
     <div class="box">
       <div id="table">
@@ -96,7 +33,6 @@
               {{item.name}}
             </p>
           </div>
-
 
           <div class="content">
             <div class="column-content contentMsg">

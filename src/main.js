@@ -8,11 +8,11 @@ import 'mint-ui/lib/style.css'
 import './utils/DataFormat.js'
 import 'element-ui/lib/theme-default/index.css'
 import FastClick from 'fastclick'
-
 import Axios from 'axios'
+
 // import element from 'element-ui'
 import { Radio,Input } from 'element-ui'
-// import './utils/wx.js'
+// Vue.use(element);
 
 Vue.prototype.$http = Axios;
 
@@ -22,7 +22,7 @@ if ('addEventListener' in document) {
   }, false);
 }
 
-// Vue.use(element);
+
 Vue.use(Radio);
 Vue.use(Input);
 // 微信标题

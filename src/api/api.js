@@ -27,7 +27,11 @@ export const storesLocationPostMsg = params => { return axios.post(`${base}/kqad
 // 签到-初始化
 export const signIninitialize = params => { return axios.post(`${base}/kqadmin/api.php?controller=ClockMain&action=index&mod=init`,params).then(res => res.data)};
 
+// 日报-初始化
+export const dailyPaperInitialize = params => { return axios.post(`${base}/kqadmin/index.php?controller=StatDay&action=index&mod=init`,params).then(res => res.data)};
 
+// 日报-确认日报
+export const makeSureDaily = params => { return axios.post(`${base}/kqadmin/index.php?controller=StatDay&action=index&mod=init`,params).then(res => res.data)};
 
 
 
@@ -36,3 +40,6 @@ export const requestLogin = params => { return axios.post(`${base}/login`, param
 
 // get请求示例
 export const getUserList = params => { return axios.get(`${base}/user/list`, { params: params }); };
+
+// 如果post提交后台,需要将参数通过qs转化
+export const postTest = params => { return axios.post(`${base}/kqadmin/api.php?controller=SysAdmin&action=yaoqing`,qs.stringify(params)).then(res => res.data)};

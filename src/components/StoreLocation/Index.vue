@@ -161,7 +161,6 @@
 
       this.loading = true;
       var _this = this;
-
       requestStoresInitialize().then((res) => {
         if (res.code == 1) {
           var appId = res.data.signpackage.appId;
