@@ -19,13 +19,14 @@
 
       <div style="overflow-y: scroll;height: 90%;">
         <div class="middleMsg" v-for="(item,index) in list" :key="index">
-          <div class="titleName">{{item.name}}</div>
-          <div class="titleMsg" @click="open(index)">
-            <span v-if="item.type == 0" style="color: #ed1204">{{item.detail | FormatDate}}</span>
-            <span v-if="item.type == 1" style="color: deepskyblue">{{item.detail | FormatDate}}</span>
-            <span v-if="item.type == 2" style="color: lightcoral">{{item.detail | FormatDate}}</span>
-            <span v-if="item.type == 3" style="">{{item.detail | FormatDate}}</span>
-            <img :src="'./static/storesDaily/edit.png'" width="15" height="15" style="margin-left: 5px">
+          <div class="titleName" :class="{'storeUser' : item.storeuser == 1}">{{item.name}}</div>
+          <div class="titleMsg" @click="item.canedit == 1 && open(index)">
+            <span>{{item.state | FormatDate}}</span>
+            <!--<span v-if="item.type == 0" style="color: #ed1204">{{item.state | FormatDate}}</span>
+            <span v-if="item.type == 1" style="color: deepskyblue">{{item.state | FormatDate}}</span>
+            <span v-if="item.type == 2" style="color: lightcoral">{{item.state | FormatDate}}</span>
+            <span v-if="item.type == 3" style="">{{item.state | FormatDate}}</span>-->
+            <img v-if="item.canedit == 1" :src="'./static/storesDaily/edit.png'" width="15" height="15" style="margin-left: 5px">
           </div>
         </div>
       </div>
@@ -33,7 +34,7 @@
 
     <div class="footer">
       <div class="footerBtn">
-        <mt-button>确认日报</mt-button>
+        <mt-button @click="makeSureDaily">确认日报</mt-button>
       </div>
     </div>
 
@@ -42,6 +43,7 @@
       type="date"
       month-format="{value} 月"
       date-format="{value} 日"
+      @change="setSlotValue(index, value)"
       :endDate="endDate"
       v-model="pickerValue"
       @confirm="handleConfirm"
@@ -52,10 +54,12 @@
     <mt-popup
       v-model="popupVisible"
       :closeOnClickModal="false"
-      >
+    >
       <div class="mask">
         <div class="content">
-          <mt-button class="item" @click.native="selected(index,value.msg)" :class="{'itemR' : value.selected === true}" v-for="(value, index) in detail" :key="index" >{{value.msg}}</mt-button>
+          <mt-button class="item" @click.native="selected(index,value.msg)" :class="{'itemR' : value.selected === true}"
+                     v-for="(value, index) in detail" :key="index">{{value.msg}}
+          </mt-button>
         </div>
 
         <div class="maskBtn">
@@ -63,30 +67,31 @@
         </div>
       </div>
     </mt-popup>
+
+    <mt-popup
+      v-model="popupSubmit"
+      :closeOnClickModal="false"
+    >
+      <div class="maskT">
+        <div class="msgTip">{{msgTip}}</div>
+        <div class="footerBtn">
+          <mt-button @click="sureBtn">确认</mt-button>
+        </div>
+      </div>
+    </mt-popup>
   </div>
 </template>
 <script>
 
-/*  import Vue from 'vue'
-
-  //过滤器
-  Vue.filter('FormatDate', function(item) {
-    var str = "";
-    item.forEach(function (value, index) {
-      console.log(1);
-      str = value + '+' + str;
-    });
-
-    str = str.substring(0, str.lastIndexOf('+'));
-    return str;
-  });*/
-
+  import {storesDailyInitialize, editDailyInitialize, makeSureDailyInitialize} from '../../api/api.js'
+  import {Toast} from 'mint-ui';
 
   export default {
-
-    data(){
-      return{
-        popupVisible: false,   // 控制蒙版的显隐
+    data() {
+      return {
+        popupVisible: false,              // 控制蒙版的显隐
+        popupSubmit: false,                // 提交弹窗
+        msgTip: "",                        // 提示信息
         pickerValue: "",
         pickerData: new Date().Format("yyyy-MM-dd"),
         index: 0,               // 记录当前被选中cell
@@ -94,59 +99,33 @@
         list: [
           {
             name: "程俊文",
-            detail: ["已签到","未签到"],
-            type: 0         // 红色
+            state: ["已签到", "未签到"],
+            type: 0,         // 红色
+            storeuser: 1,
+            canedit: 1
           },
           {
             name: "程俊文",
-            detail: ["已签到"],
+            state: ["已签到", "未签到"],
+            type: 0,         // 红色
+            storeuser: 1,
+            canedit: 1
+          },
+          {
+            name: "程俊文",
+            state: ["已签到"],
             type: 1         // 蓝色
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
+            state: ["未签到"],
             type: 2         // 橙色
           },
           {
             name: "程俊文",
-            detail: ["未签到"],
+            state: ["未签到"],
             type: 3         // 黑色
           },
-          {
-            name: "程俊文",
-            detail: ["未签到"],
-            type: 3         // 黑色
-          },
-          {
-            name: "程俊文",
-            detail: ["未签到"],
-            type: 2         // 橙色
-          },
-          {
-            name: "程俊文",
-            detail: ["未签到"],
-            type: 3         // 黑色
-          },
-          {
-            name: "程俊文",
-            detail: ["未签到"],
-            type: 3         // 黑色
-          },
-          {
-            name: "程俊文",
-            detail: ["未签到"],
-            type: 2         // 橙色
-          },
-          {
-            name: "程俊文",
-            detail: ["未签到"],
-            type: 3         // 黑色
-          },
-          {
-            name: "程俊文",
-            detail: ["未签到"],
-            type: 3         // 黑色
-          }
         ],
         detail: [
           {
@@ -210,126 +189,239 @@
             selected: false
           }
         ],
-        endDate: new Date()
+        endDate: new Date(),
+        count: 0,                // 记录当前选中个数
+        flagTip: true,            // 防止多次触发
+        code: null                // 记录初始化code值
       }
     },
     methods: {
-      open(index){
+      open(index) {
         var _this = this;
         this.popupVisible = true;
 
         // 记录当前被选中index
         this.index = index;
+
+        console.log(this.detail);
         this.detail.forEach(function (value, count) {
-          if (_this.list[index].detail.indexOf(value.msg) >= 0){
+          if (_this.list[index].state.indexOf(value.msg) >= 0) {
             value.selected = true;
           }
         })
 
       },
-      selected(count, value){
+      selected(count) {
+        var _this = this;
+        if (this.flagTip) {
+          this.flagTip = false;
 
-        this.detail[count].selected = !this.detail[count].selected;
+          this.detail[count].selected = !this.detail[count].selected;
 
+          var num = 0;
+          this.detail.forEach(function (value) {
+            if (value.selected) {
+              num++;
+            }
+          });
+
+          _this.count = num;
+
+          if (_this.count <= 2) {
+            _this.flagTip = true
+          } else {
+            Toast("最多只能选择两个!");
+            this.detail[count].selected = !this.detail[count].selected;
+            _this.flagTip = true
+          }
+        }
       },
-      sure(){
+      // 日报-修改日报
+      sure() {
 
         var _this = this;
 
         this.popupVisible = false;
 
         this.detail.forEach(function (value) {
-          if (value.selected){
-            _this.value.push(value.msg);
+          if (value.selected) {
+            _this.value.splice(0, 0, value.msg);
           }
         });
 
-        this.list[_this.index].detail = this.value;
-        this.value = [];
+        var state_a = "";
+        var state_b = "";
 
-        this.detail = [
-          {
-            msg: "未签到",
-            selected: false
-          },
-          {
-            msg: "已签到",
-            selected: false
-          },
-          {
-            msg: "早退",
-            selected: false
-          },
-          {
-            msg: "已签退",
-            selected: false
-          },
-          {
-            msg: "休息",
-            selected: false
-          },
-          {
-            msg: "补休",
-            selected: false
-          },
-          {
-            msg: "事假",
-            selected: false
-          },
-          {
-            msg: "病假",
-            selected: false
-          },
-          {
-            msg: "旷工",
-            selected: false
-          },
-          {
-            msg: "年假",
-            selected: false
-          },
-          {
-            msg: "婚嫁",
-            selected: false
-          },
-          {
-            msg: "产假",
-            selected: false
-          },
-          {
-            msg: "陪产假",
-            selected: false
-          },
-          {
-            msg: "工伤",
-            selected: false
-          },
-          {
-            msg: "丧假",
-            selected: false
+        if (_this.value.length == 1){
+           state_a = _this.value[0];
+        }else if (_this.value.length == 2){
+           state_a = _this.value[0];
+           state_b = _this.value[1];
+        }
+
+        /*console.log(state_a);
+        console.log(state_b);*/
+
+        var params = {
+          id: this.list[_this.index].id,
+          state_a: state_a,                    // 修改前
+          state_b: state_b                     // 修改后
+        };
+
+        console.log(params);
+
+        // 确认日报
+        editDailyInitialize(params).then((res) => {
+          _this.msgTip = res.msg;
+          _this.popupSubmit = true;
+          if (res.code == 1) {
+            _this.list[_this.index].state = this.value;
+            _this.value = [];
+            _this.count = 0;
           }
-        ]
+          _this.detail = [
+            {
+              msg: "未签到",
+              selected: false
+            },
+            {
+              msg: "已签到",
+              selected: false
+            },
+            {
+              msg: "早退",
+              selected: false
+            },
+            {
+              msg: "已签退",
+              selected: false
+            },
+            {
+              msg: "休息",
+              selected: false
+            },
+            {
+              msg: "补休",
+              selected: false
+            },
+            {
+              msg: "事假",
+              selected: false
+            },
+            {
+              msg: "病假",
+              selected: false
+            },
+            {
+              msg: "旷工",
+              selected: false
+            },
+            {
+              msg: "年假",
+              selected: false
+            },
+            {
+              msg: "婚嫁",
+              selected: false
+            },
+            {
+              msg: "产假",
+              selected: false
+            },
+            {
+              msg: "陪产假",
+              selected: false
+            },
+            {
+              msg: "工伤",
+              selected: false
+            },
+            {
+              msg: "丧假",
+              selected: false
+            }
+          ]
+        }).catch((error) => {
+          console.log(error);
+        });
+
       },
       openPicker() {
         this.$refs.picker.open();
       },
-      handleConfirm(){
+      handleConfirm() {
         this.pickerData = new Date(this.pickerValue).Format("yyyy-MM-dd ");
+        this.api();
+      },
+      sureBtn() {
+        if (this.code == -1 || this.code == 3 || this.code == 4){
+          this.$router.push("/");
+        }
+        this.popupSubmit = false;
+      },
+      // 日报-初始化
+      api() {
+        var _this = this;
+
+        var params = {
+          "date": _this.pickerData
+        };
+
+        var arr = [];
+
+        storesDailyInitialize(params).then((res) => {
+          _this.msgTip = res.msg;
+          if (res.code == 1) {
+            _this.list = res.data.list;
+
+            res.data.base_state.forEach(function (value, index) {
+              arr.push({
+                msg: value,
+                selected: false
+              })
+            });
+
+            _this.detail = arr;
+
+          } else {
+            _this.popupSubmit = true;
+          }
+        }).catch((error) => {
+          console.log(error);
+        })
+      },
+      // 日报-确认日报
+      makeSureDaily() {
+        var _this = this;
+
+        var params = {
+          "date": _this.pickerData
+        };
+        makeSureDailyInitialize(params).then((res) => {
+          _this.msgTip = res.msg;
+          _this.popupSubmit = true;
+        }).catch((res) => {
+
+        })
+      },
+      setSlotValue(index,value){
+        console.log(index);
+        console.log(value);
       }
     },
-    computed: {
-
+    mounted() {
+      this.api();
     }
   }
 </script>
 <style lang="less" scoped>
-  #storeDaily{
+  #storeDaily {
     height: 100%;
     // top
-    .top{
+    .top {
       padding: 8px;
       display: flex;
-      .topBtn{
+      .topBtn {
         background-color: #ed1204;
         height: 29px;
         color: white;
@@ -339,29 +431,29 @@
         align-items: center;
         flex: 1;
         /*width: 100%;*/
-        >img{
+        > img {
           margin-left: 20px;
         }
-        span:nth-child(2){
+        span:nth-child(2) {
           flex: 8;
           width: 30px;
         }
-        span:nth-child(3){
+        span:nth-child(3) {
           flex: 1;
-          img{
+          img {
             transform: rotate(47deg);
           }
         }
       }
     }
     // table
-    .middle{
+    .middle {
       width: 100%;
       height: 70%;
-      .middleTable{
+      .middleTable {
         display: flex;
-        background-color: rgb(245,245,245);
-        .title{
+        background-color: rgb(245, 245, 245);
+        .title {
           font-size: 14px;
           font-weight: 200;
           color: #ed1204;
@@ -375,11 +467,11 @@
       }
     }
 
-    .middleMsg{
+    .middleMsg {
       display: flex;
-      background-color: rgb(245,245,245);
+      background-color: rgb(245, 245, 245);
     }
-    .titleName,.titleMsg{
+    .titleName, .titleMsg {
       background-color: #fff;
       margin-bottom: 1px;
       flex: 1;
@@ -394,63 +486,93 @@
     }
 
     // footer
-    .footer{
+    .footer {
       display: flex;
       margin-top: 40px;
-      .footerBtn{
+      .footerBtn {
         padding: 0 10px;
         width: 100%;
         flex: 1;
         display: flex;
         justify-content: center;
         align-items: center;
-        .mint-button--normal{
+        .mint-button--normal {
           flex: 1;
-          background:-webkit-gradient(linear, -30% 50%, 30% -50%, from(#ed1204), to(#ed3806));
+          background: -webkit-gradient(linear, -30% 50%, 30% -50%, from(#ed1204), to(#ed3806));
           color: white;
         }
       }
     }
 
     // 蒙版
-    .mask{
+    .mask {
       width: 300px;
       padding: 20px 15px 20px 15px;
-      .content{
+      .content {
         display: flex;
         flex-wrap: wrap;
         width: 100%;
         justify-content: center;
         align-items: center;
-        .item{
+        .item {
           width: 80px;
           text-align: center;
           margin-right: 6.6px;
           margin-left: 6.6px;
           margin-bottom: 13px;
-          background-color: rgb(201,201,201);
+          background-color: rgb(201, 201, 201);
           color: white;
         }
       }
 
-      .maskBtn{
+      .maskBtn {
         padding: 20px 15px 0;
         display: flex;
         justify-content: center;
         align-items: center;
-        .mint-button--normal{
+        .mint-button--normal {
           flex: 1;
           color: white;
-          background:-webkit-gradient(linear, -30% 50%, 30% -50%, from(#ed1204), to(#ed3806));
+          background: -webkit-gradient(linear, -30% 50%, 30% -50%, from(#ed1204), to(#ed3806));
         }
       }
-      .itemR{
+      .itemR {
         background-color: #ed1204 !important;
       }
     }
   }
 
-  .picker-slot{
+  .picker-slot {
     overflow-y: scroll;
+  }
+
+  .maskT {
+    width: 220px;
+    padding: 30px 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 5px;
+    .msgTip {
+      margin-bottom: 20px;
+      color: #ed1204;
+      font-size: 20px;
+    }
+  }
+
+  .footerBtn {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .mint-button--normal {
+      flex: 1;
+      background: -webkit-gradient(linear, -30% 50%, 30% -50%, from(#ed1204), to(#ed3806));
+      color: white;
+      height: 42px;
+      font-size: 16px;
+    }
   }
 </style>

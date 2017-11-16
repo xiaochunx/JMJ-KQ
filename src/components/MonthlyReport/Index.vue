@@ -21,7 +21,8 @@
           <div class="content">
             <div class="column-content">
               <p>
-                <span v-for="detail in rowList" class="dataTime">{{detail}}</span>
+                <span v-if="!flag" v-for="detail in rowList" class="dataTime">{{detail.time}}</span>
+                <span v-if="flag" v-for="detail in rowList" class="dataTime">{{detail}}</span>
               </p>
             </div>
           </div>
@@ -29,30 +30,43 @@
 
         <div id="body">
           <div class="left">
-            <p v-for="(item,index) in list" :class="{'total': item.type == 4}">
+            <p v-for="(item,index) in list" :class="{'storeUser' : item.storeuser == 1}">
               {{item.name}}
             </p>
           </div>
 
           <div class="content">
             <div class="column-content contentMsg">
-              <div v-for="(value,index1) in list">
-                <span v-for="(item,index) in value.detail" style="width: 94px;display: inline-block" @click="open(index1,index)">
-                  <span v-if="item.type == 0" style="color: #ed1204" class="contentC">{{item.msg | FormatDate}}
-                    <img :src="'./static/storesDaily/edit.png'" width="15" height="15" style="margin-left: 5px">
+              <div v-if="!flag" v-for="(value,index1) in list">
+                <span v-for="(item,index) in value.detail" style="width: 94px;height: 46px; display: inline-block;float: left;" @click="item.canedit == 1 && open(index1,index)">
+                  <!--<span v-if="item.type == 0" style="color: #ed1204" class="contentC">{{item.msg | FormatDate}}
+                    <img :src="'./static/storesDaily/edit.png'" width="15" height="15" style="margin-left: 5px;position: absolute;
+    right: 2px;top: 2px;">
                   </span>
                   <span v-if="item.type == 1" style="color: deepskyblue"
                         class="contentC">{{item.msg | FormatDate}}
-                    <img :src="'./static/storesDaily/edit.png'" width="15" height="15" style="margin-left: 5px">
+                    <img :src="'./static/storesDaily/edit.png'" width="15" height="15" style="margin-left: 5px;position: absolute;
+    right: 2px;top: 2px;">
                   </span>
                   <span v-if="item.type == 2" style="color: lightcoral"
                         class="contentC">{{item.msg | FormatDate}}
                     <img :src="'./static/storesDaily/edit.png'" width="15" height="15" style="margin-left: 5px">
                   </span>
                   <span v-if="item.type == 3" style="" class="contentC">{{item.msg | FormatDate}}
-                    <img :src="'./static/storesDaily/edit.png'" width="15" height="15" style="margin-left: 5px">
+                    <img :src="'./static/storesDaily/edit.png'" width="15" height="15" style="margin-left: 5px;position: absolute;
+    right: 2px;top: 2px;">
+                  </span>-->
+                  <span class="contentC">{{item.msg | FormatDate}}
+                    <img v-if="item.canedit == 1" :src="'./static/storesDaily/edit.png'" width="15" height="15" style="margin-left: 5px;position: absolute;
+    right: 2px;top: 2px;">
                   </span>
+                </span>
+              </div>
 
+              <div v-if="flag" v-for="(value,index1) in list">
+                <span v-for="(item,index) in value.detail" style="width: 94px;height: 46px; display: inline-block;float: left;"
+                      @click="item.canedit == 1 && open(index1,index)">
+                  <span class="contentC">{{item}}</span>
                 </span>
               </div>
             </div>
@@ -61,20 +75,16 @@
       </div>
     </div>
 
-    <div class="message margin">
+    <div class="message">
       <div class="margin">本次修改: </div>
       <div class="changeMsg margin">
-        <span class="margin">程俊文,10月2号,未签到 改 已签到</span>
-        <span class="margin">程俊文,10月2号,未签到 改 已签到</span>
-        <span class="margin">程俊文,10月2号,未签到 改 已签到</span>
-        <span class="margin">程俊文,10月2号,未签到 改 已签到</span>
-        <span class="margin">程俊文,10月2号,未签到 改 已签到</span>
+        <span class="margin" v-for="(value,index) in detailArr" :key="index">{{value}}</span>
       </div>
     </div>
 
     <div class="footer">
       <div class="footerBtn">
-        <mt-button>确认日报</mt-button>
+        <mt-button @click="submit">提醒审批</mt-button>
       </div>
     </div>
 
@@ -107,649 +117,62 @@
       :closeOnClickModal="false"
     >
     </mt-datetime-picker>
+
+
+    <mt-popup
+      v-model="popupSubmit"
+      :closeOnClickModal="false"
+    >
+      <div class="maskT">
+        <div class="msgTip">{{msgTip}}</div>
+        <div class="footerBtn">
+          <mt-button @click="sureBtn">确认</mt-button>
+        </div>
+      </div>
+    </mt-popup>
+
+    <div class="tipLoading">
+
+      <mt-popup
+        v-model="loading"
+        :closeOnClickModal="false"
+      >
+        <div class="loading">
+          <mt-spinner type="fading-circle" class="isLoading"></mt-spinner>
+        </div>
+      </mt-popup>
+    </div>
   </div>
 </template>
 <script>
-  var Mock = require('mockjs')
+  import { monthlyReportInitialize, monthlyEdit, monthlyChange,remindApproval } from '../../api/api.js'
+  import Vue from 'vue'
+  import {Toast} from 'mint-ui';
+  //过滤器
+  Vue.filter('FormatDate', function (item) {
+    var str = "";
+    for (var value in item) {
+      str = item[value] + '+' + str;
+    }
+
+    str = str.substring(0, str.lastIndexOf('+'));
+    return str;
+  });
+
   export default {
     data() {
       return {
+        loading: false,
         popupVisible: false,   // 控制蒙版的显隐
+        popupSubmit: false,
         pickerValue: "",
+        msgTip: "",            // 提示弹窗
+        indexI: 0,
+        indexJ: 0,
         pickerData: new Date().Format("yyyy-MM"),
-        list: [
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["已签到", "未签"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-        ],
-        rowList: ['2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12'],
+        value: [],              // 记录当前选中的按钮
+        list: [],
+        rowList: [],
         detail: [
           {
             msg: "未签到",
@@ -812,39 +235,262 @@
             selected: false
           }
         ],
-        flag: false,          // 是否点击切换按钮
+        flag: false,           // 是否点击切换按钮
         endDate: new Date(),
-        mockData: Mock.mock({
-          "list|20-30": [
-            {
-              "name": "@cname",
-              "record": [1, 2, 1, 1, 2, 2, 2, 1, 1, 1]
-            }
-          ]
-        })
+        detailArr: [],
+        count: 0,                // 记录当前选中个数
+        flagTip: true,
+        code: null               // 记录初始化code值
       }
     },
     methods: {
-      open(i,j) {
-        console.log(i);
-        console.log(j);
-        if (this.flag){
+      sureBtn() {
+        if (this.code == -1 || this.code == 3 || this.code == 4){
+          this.$router.push('/')
+        }
+        this.popupSubmit = false;
+      },
+      open(i, j) {
+        var _this = this;
+        this.popupVisible = true;
+        this.indexI = i;
+        this.indexJ = j;
 
-        }else {
+        if (!this.flag) {
+          this.detail.forEach(function (value) {
+            if (_this.list[i].detail[j].msg.indexOf(value.msg) >= 0) {
+              value.selected = true;
+              console.log(value.msg);
+            }
+          });
+        }
+        else {
           this.popupVisible = true;
         }
       },
-      selected(index) {
-        this.detail[index].selected = !this.detail[index].selected;
+      selected(count) {
+        var _this = this;
+        if (this.flagTip) {
+          this.flagTip = false;
+
+          this.detail[count].selected = !this.detail[count].selected;
+
+          var num = 0;
+          this.detail.forEach(function (value) {
+            if (value.selected) {
+              num++;
+            }
+          });
+
+          _this.count = num;
+
+          if (_this.count <= 2) {
+            _this.flagTip = true
+          } else {
+            Toast("最多只能选择两个!");
+            this.detail[count].selected = !this.detail[count].selected;
+            _this.flagTip = true
+          }
+        }
       },
+      // 月报-月报修改
       sure() {
+        var _this = this;
+
         this.popupVisible = false;
+
+        // 将选中的数组存放在数组中
+        this.detail.forEach(function (value) {
+          if (value.selected) {
+            _this.value.splice(0, 0, value.msg);
+          }
+        });
+
+        var state_a = "";          // 修改前
+        var state_b = "";          // 修改后
+        var str = "";              // 用于记录修改详情
+
+        if (_this.value.length == 1){
+          state_a = _this.value[0];
+        }else if (_this.value.length == 2){
+          state_a = _this.value[0];
+          state_b = _this.value[1];
+        }
+
+
+        // 拼接修改信息
+        str += _this.list[_this.indexI].name + ',';
+        str += _this.rowList[_this.indexJ].time + ',';
+        _this.list[_this.indexI].detail[_this.indexJ].msg.forEach(function (value, index) {
+          str += " " + value + '';
+        });
+        str += " 改";
+        var strSub = "";
+        for (var value in _this.value) {
+          strSub = _this.value[value] + '+' + strSub;
+        }
+        strSub = strSub.substring(0, strSub.lastIndexOf('+'));
+        str += " " + strSub;
+
+        // 发送网络请求 ->
+        var params = {
+            "id": _this.list[_this.indexI].detail[_this.indexJ].id,
+            "state_a": state_a,
+            "state_b": state_b
+        };
+        // 月报修改
+        monthlyEdit(params).then((res) => {
+
+          /*res = {code : 1}*/
+          if (res.code == 1) {
+            _this.detailArr.push(str);
+
+            _this.list[_this.indexI].detail[_this.indexJ].msg = _this.value;
+            _this.value = [];
+            _this.detail = [
+              {
+                msg: "未签到",
+                selected: false
+              },
+              {
+                msg: "已签到",
+                selected: false
+              },
+              {
+                msg: "早退",
+                selected: false
+              },
+              {
+                msg: "已签退",
+                selected: false
+              },
+              {
+                msg: "休息",
+                selected: false
+              },
+              {
+                msg: "补休",
+                selected: false
+              },
+              {
+                msg: "事假",
+                selected: false
+              },
+              {
+                msg: "病假",
+                selected: false
+              },
+              {
+                msg: "旷工",
+                selected: false
+              },
+              {
+                msg: "年假",
+                selected: false
+              },
+              {
+                msg: "婚嫁",
+                selected: false
+              },
+              {
+                msg: "产假",
+                selected: false
+              },
+              {
+                msg: "陪产假",
+                selected: false
+              },
+              {
+                msg: "工伤",
+                selected: false
+              },
+              {
+                msg: "丧假",
+                selected: false
+              }
+            ]
+
+            _this.popupSubmit = true;
+            _this.msgTip = res.msg;
+
+          } else {
+            _this.msgTip = res.msg;
+            _this.popupSubmit = true;
+            _this.detail = [
+              {
+                msg: "未签到",
+                selected: false
+              },
+              {
+                msg: "已签到",
+                selected: false
+              },
+              {
+                msg: "早退",
+                selected: false
+              },
+              {
+                msg: "已签退",
+                selected: false
+              },
+              {
+                msg: "休息",
+                selected: false
+              },
+              {
+                msg: "补休",
+                selected: false
+              },
+              {
+                msg: "事假",
+                selected: false
+              },
+              {
+                msg: "病假",
+                selected: false
+              },
+              {
+                msg: "旷工",
+                selected: false
+              },
+              {
+                msg: "年假",
+                selected: false
+              },
+              {
+                msg: "婚嫁",
+                selected: false
+              },
+              {
+                msg: "产假",
+                selected: false
+              },
+              {
+                msg: "陪产假",
+                selected: false
+              },
+              {
+                msg: "工伤",
+                selected: false
+              },
+              {
+                msg: "丧假",
+                selected: false
+              }
+            ]
+          }
+        }).catch((err) => {
+          console.log(err);
+        });
+
       },
       openPicker() {
         this.$refs.picker.open();
       },
       handleConfirm() {
         this.pickerData = new Date(this.pickerValue).Format("yyyy-MM");
+        this.apiOne();
+        this.flag = false;
       },
       con1() {
         document.querySelectorAll('.content')[1].removeEventListener('scroll', this.con2);
@@ -873,19 +519,741 @@
           scrollDOM[i].addEventListener(option.event[i], option.callBack[i]);
         }
       },
-      change(){
+      change() {
         this.flag = !this.flag;
+
+        if (!this.flag) {
+          this.apiOne();
+        } else {
+          this.apiTwo();
+        }
+      },
+      // 月报-提醒审批
+      submit() {
+
+        var _this = this;
+        var params = {
+
+        };
+        remindApproval(params).then((res) => {
+          /*res = {msg: "haha"}*/
+          _this.msgTip = res.msg;
+          _this.popupSubmit = true;
+        }).catch((err) => {
+          console.log(err);
+        })
+      },
+      // 月报-初始化
+      apiOne() {
+        this.loading = true;
+        var width = 94 * this.rowList.length;
+
+        document.querySelectorAll('.column-content')[0].style.width = width + 'px';
+        document.querySelectorAll('.column-content')[1].style.width = width + 'px';
+        this.addListener('.content', {
+          "callBack": [this.con1, this.con2],
+          "event": ["scroll", "scroll"]
+        });
+
+        var _this = this;
+        var params = {
+          month: _this.pickerData
+        };
+        var arr = [];
+        monthlyReportInitialize(params).then((res) => {
+
+          _this.code = res.code;
+          /*res = {
+            code: "1",
+            msg: "",
+            data: {
+              makesure: [
+                {
+                  time: "2017-10-25",
+                  status: "0"
+                },
+                {
+                  time: "2017-10-26",
+                  status: "0"
+                },
+                {
+                  time: "2017-10-27",
+                  status: "0"
+                },
+                {
+                  time: "2017-10-28",
+                  status: "0"
+                },
+                {
+                  time: "2017-10-29",
+                  status: "0"
+                },
+                {
+                  time: "2017-10-30",
+                  status: "0"
+                },
+                {
+                  time: "2017-10-31",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-01",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-02",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-03",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-04",
+                  status: "1"
+                },
+                {
+                  time: "2017-11-05",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-06",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-07",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-08",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-09",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-10",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-11",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-12",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-13",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-14",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-15",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-16",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-17",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-18",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-19",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-20",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-21",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-22",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-23",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-24",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-25",
+                  status: "0"
+                },
+                {
+                  time: "2017-11-26",
+                  status: "0"
+                }
+              ],
+              base_state: [
+                "未签到",
+                "已签到",
+                "早退",
+                "已签退",
+                "休息",
+                "补休",
+                "事假",
+                "病假",
+                "旷工",
+                "年假",
+                "婚假",
+                "产假",
+                "陪产假",
+                "工伤",
+                "丧假"
+              ],
+              list: [
+                {
+                  name: "黄秀",
+                  storeuser: 0,
+                  detail: [
+                    {
+                      id: "65",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 0,
+                      canedit: 0
+                    },
+                    {
+                      id: "69",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 0,
+                      canedit: 1
+                    },
+                    {
+                      id: "69",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 0,
+                      canedit: 1
+                    },
+                    {
+                      id: "69",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 0,
+                      canedit: 1
+                    },
+                    {
+                      id: "75",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 0,
+                      canedit: 0
+                    },
+                    {
+                      id: "77",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 0,
+                      canedit: 0
+                    },
+                    {
+                      id: "79",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 0,
+                      canedit: 0
+                    },
+                    {
+                      id: "81",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 0,
+                      canedit: 0
+                    },
+                    {
+                      id: "83",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 0,
+                      canedit: 0
+                    },
+                    {
+                      id: "85",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 0,
+                      canedit: 0
+                    },
+                    {
+                      id: "86",
+                      msg: [
+                        "已签到",
+                        "早退"
+                      ],
+                      type: 0,
+                      canedit: 0
+                    },
+                    {
+                      id: "88",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 0,
+                      canedit: 0
+                    },
+                    {
+                      id: "91",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 0,
+                      canedit: 0
+                    },
+                    {
+                      id: "97",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 0,
+                      canedit: 0
+                    },
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ]
+                  ]
+                },
+                {
+                  name: "李炜强",
+                  storeuser: 0,
+                  detail: [
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    {
+                      id: "89",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 0,
+                      canedit: 0
+                    },
+                    {
+                      id: "92",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 0,
+                      canedit: 0
+                    },
+                    {
+                      id: "98",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 0,
+                      canedit: 0
+                    },
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ]
+                  ]
+                },
+                {
+                  name: "陈俊文",
+                  storeuser: 0,
+                  detail: [
+                    {
+                      id: "64",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 0,
+                      canedit: 0
+                    },
+                    {
+                      id: "68",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 0,
+                      canedit: 0
+                    },
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ]
+                  ]
+                },
+                {
+                  name: "陈俊升",
+                  storeuser: 0,
+                  detail: [
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    {
+                      id: "87",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 0,
+                      canedit: 0
+                    },
+                    {
+                      id: "90",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 0,
+                      canedit: 0
+                    },
+                    {
+                      id: "95",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 1,
+                      canedit: 0
+                    },
+                    {
+                      id: "101",
+                      msg: [
+                        "未签到"
+                      ],
+                      type: 1,
+                      canedit: 0
+                    },
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ],
+                    [ ]
+                  ]
+                }
+              ],
+              chang_data: [
+                "hh,2017-11-14,未签到 改 未签到+已签到",
+                "黄秀,2017-10-25,未签到 改 未签到+事假",
+                "黄秀,2017-10-26,未签到 改 已签退+休息",
+                "黄秀,2017-10-27,未签到 改 未签到+已签退",
+                "黄秀,2017-11-10,未签到+已签到 改 未签到",
+                "李炜强,2017-11-11,未签到+已签到 改 已签到",
+                "陈俊升,2017-11-08,未签到 改 未签到+陪产假"
+              ],
+            }
+          }*/
+
+          if (res.code == 1) {
+            this.loading = false;
+            _this.rowList = res.data.makesure;
+            _this.list = res.data.list;
+            _this.detailArr = res.data.chang_data;
+
+            res.data.base_state.forEach(function (value, index) {
+              arr.push({
+                msg: value,
+                selected: false
+              })
+            });
+
+            _this.detail = arr;
+
+            var width = 94 * this.rowList.length;
+
+            console.log(width);
+            document.querySelectorAll('.column-content')[0].style.width = width + 'px';
+            document.querySelectorAll('.column-content')[1].style.width = width + 'px';
+          } else {
+            _this.msgTip = res.msg;
+            _this.popupSubmit = true;
+          }
+        }).catch((err) => {
+          console.log(err);
+        })
+      },
+      // 月报-统计
+      apiTwo() {
+        this.loading = true;
+
+        // 发送网络请求 ->
+        var _this = this;
+        var params = {
+          month: _this.pickerData
+        };
+        var arr = [];
+
+        monthlyChange(params).then((res) => {
+          /*res = {
+            code: "1",
+            msg: "",
+            data: {
+              base_state: [
+                "未签到",
+                "已签到",
+                "早退",
+                "已签退",
+                "休息",
+                "补休",
+                "事假",
+                "病假",
+                "旷工",
+                "年假",
+                "婚假",
+                "产假",
+                "陪产假",
+                "工伤",
+                "丧假"
+              ],
+              list: [
+                {
+                  name: "陈俊文",
+                  detail: [
+                    4,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                  ]
+                },
+                {
+                  name: "黄秀",
+                  detail: [
+                    23,
+                    0.5,
+                    0.5,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                  ]
+                },
+                {
+                  name: "陈俊升",
+                  detail: [
+                    2,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                  ]
+                },
+                {
+                  name: "李炜强",
+                  detail: [
+                    3,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                  ]
+                },
+                {
+                  name: "总计",
+                  detail: [
+                    32,
+                    0.5,
+                    0.5,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                  ]
+                }
+              ]
+            }
+          };*/
+
+          if (res.code == 1) {
+            this.loading = false;
+            _this.list = res.data.list;
+            _this.rowList = res.data.base_state;
+
+            res.data.base_state.forEach(function (value, index) {
+              arr.push({
+                msg: value,
+                selected: false
+              })
+            });
+
+            _this.detail = arr;
+
+            var width = 94 * this.rowList.length;
+
+            document.querySelectorAll('.column-content')[0].style.width = width + 'px';
+            document.querySelectorAll('.column-content')[1].style.width = width + 'px';
+          } else {
+            _this.msgTip = res.msg;
+            _this.popupSubmit = true;
+          }
+        }).catch((err) => {
+          console.log(err);
+        })
       }
     },
     mounted() {
-      var width = 94 * 10;
-      console.log(width);
-      document.querySelectorAll('.column-content')[0].style.width = width + 'px';
-      document.querySelectorAll('.column-content')[1].style.width = width + 'px';
-      this.addListener('.content', {
-        "callBack": [this.con1, this.con2],
-        "event": ["scroll", "scroll"]
-      });
+      this.apiOne();
+
+      setTimeout(function () {
+        // 移除日期
+        var dom = document.querySelectorAll('.picker-slot-center');
+
+        if(dom.length == 3){
+          dom[2].remove();
+        }
+      },100)
     }
   }
 </script>
@@ -919,6 +1287,22 @@
             transform: rotate(47deg);
           }
         }
+      }
+    }
+    .box{
+      height: 60%;
+    }
+    .footer{
+      height: 10%;
+    }
+    .message{
+      height: 23%;
+    }
+
+    #table{
+      height: 100%;
+      .body{
+        height: 100%;
       }
     }
 
@@ -964,7 +1348,7 @@
     // footer
     .footer {
       display: flex;
-      margin-top: 20px;
+
       .footerBtn {
         padding: 0 10px;
         width: 100%;
@@ -1132,12 +1516,13 @@
     border-bottom-width: 1px;
   }
 
-  .message{
+  .message {
     display: flex;
     flex-direction: column;
     font-size: 14px;
     padding-left: 10px;
-    .changeMsg{
+    height: 114px;
+    .changeMsg {
       overflow-y: scroll;
       height: 80px;
       display: flex;
@@ -1145,22 +1530,68 @@
     }
   }
 
-  .margin{
+  .margin {
     margin-top: 10px;
   }
 
-  .total{
+  .total {
     color: orange;
   }
 
   .contentC {
     width: 94px;
     height: 45px;
-    line-height: 45px;
     border-right: 1px solid gainsboro;
     border-bottom: 1px solid gainsboro;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+  }
+
+  .maskT {
+    width: 220px;
+    padding: 30px 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 5px;
+    .msgTip {
+      margin-bottom: 20px;
+      color: #ed1204;
+      font-size: 20px;
+    }
+  }
+
+  .footerBtn {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .mint-button--normal {
+      flex: 1;
+      background: -webkit-gradient(linear, -30% 50%, 30% -50%, from(#ed1204), to(#ed3806));
+      color: white;
+      height: 42px;
+      font-size: 16px;
+    }
+  }
+
+  .tipLoading{
+    .mint-popup{
+      width: 100px;
+    }
+    .loading {
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      .isLoading {
+        margin-bottom: 10px;
+      }
+    }
   }
 </style>

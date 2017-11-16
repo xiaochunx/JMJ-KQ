@@ -11,7 +11,7 @@
       </div>
       <div class="topBtn" style="margin-left: 10px" @click="openPopup">
         <img :src="'./static/storesDaily/dian.png'" width="24" height="24" style="margin-right: 20px">
-        <span>{{storesName}}</span>
+        <span :class="{'smallSize' : storesName.length > 5}">{{storesName}}</span>
         <span>
           <img :src="'./static/storesDaily/xiala.png'" alt="" style="width: 14px;height: 10px">
         </span>
@@ -28,8 +28,12 @@
           </div>
           <div class="content">
             <div class="column-content">
-              <p>
+              <p v-if="!flag">
                 <span v-for="detail in rowList" class="dataTime">{{detail}}</span>
+              </p>
+
+              <p v-if="flag">
+                <span v-for="detail in rowList" class="dataTime">{{detail.time}}</span>
               </p>
             </div>
           </div>
@@ -37,22 +41,24 @@
 
         <div id="body">
           <div class="left">
-            <p v-for="(item,index) in list" :class="{'total': item.type == 4}">
+            <p v-for="(item,index) in list" :class="{'storeUser' : item.storeuser == 1}">
               {{item.name}}
             </p>
           </div>
 
-
           <div class="content">
             <div class="column-content contentMsg">
-              <div v-for="(value,index1) in list">
-                <span v-for="(item,index) in value.detail" style="width: 94px;display: inline-block">
-                  <span v-if="item.type == 0" style="color: #ed1204" class="contentC">{{item.msg | FormatDate}}</span>
-                  <span v-if="item.type == 1" style="color: deepskyblue"
-                        class="contentC">{{item.msg | FormatDate}}</span>
-                  <span v-if="item.type == 2" style="color: lightcoral"
-                        class="contentC">{{item.msg | FormatDate}}</span>
-                  <span v-if="item.type == 3" style="" class="contentC">{{item.msg | FormatDate}}</span>
+              <div v-if="!flag" v-for="(value,index1) in list">
+                <span v-for="(item,index) in value.detail" style="width: 94px;display: inline-block;float: left;">
+                  <span class="contentC">{{item}}</span>
+                </span>
+              </div>
+
+              <div v-if="flag" v-for="(value,index1) in list">
+                <span v-for="(item,index) in value.detail"
+                      style="width: 94px;height: 46px; display: inline-block;float: left"
+                      @click="open(index1,index)">
+                  <span class="contentC">{{item.msg | FormatDate}}</span>
                 </span>
               </div>
             </div>
@@ -82,9 +88,38 @@
       :closeOnClickModal="false"
     >
     </mt-datetime-picker>
+
+    <div class="msgTip">
+      <mt-popup
+        v-model="popupSubmit"
+        :closeOnClickModal="false"
+      >
+        <div class="maskT">
+          <div class="msgTip">{{msgTip}}</div>
+          <div class="footerBtn">
+            <mt-button @click="sureBtn">确认</mt-button>
+          </div>
+        </div>
+      </mt-popup>
+    </div>
+
+
+    <div class="tipLoading">
+
+      <mt-popup
+        v-model="loading"
+        :closeOnClickModal="false"
+      >
+        <div class="loading">
+          <mt-spinner type="fading-circle" class="isLoading"></mt-spinner>
+        </div>
+      </mt-popup>
+    </div>
   </div>
 </template>
 <script>
+  import { monthlyReport, monthlyRportDetail } from '../../api/api.js'
+  import utils from '@/utils/common.js'
 
   import Vue from 'vue'
 
@@ -99,650 +134,26 @@
     return str;
   });
 
-  var Mock = require('mockjs')
   export default {
     data() {
       return {
+        loading: false,
         popupVisible: false,
+        popupSubmit: false,
         storesNameIn: "",
         pickerValue: "",
+        msgTip: "",
         pickerData: new Date().Format("yyyy-MM"),
         list: [
           {
             name: "程俊文",
-            detail: [
-              {
-                msg: ["已签到", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
-          },
-          {
-            name: "程俊文",
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ],
+            detail: [],
           },
         ],
-        rowList: ['2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12', '2017-11-12'],
+        rowList: [],
         flag: false,          // 是否点击切换按钮
         endDate: new Date(),
-        storesName: "天河北店",                     // 门店名称
+        storesName: "",                     // 门店名称
         slots: [
           {
             flex: 1,
@@ -750,9 +161,16 @@
             className: 'slot1',
             textAlign: 'center'
           }],
+        code: null          // 记录初始code值
       }
     },
     methods: {
+      sureBtn() {
+        if (this.code == -1 || this.code == 3 || this.code == 4) {
+          this.$router.push('/');
+        }
+        this.popupSubmit = false;
+      },
       open(index) {
         if (this.flag) {
 
@@ -763,11 +181,17 @@
       sure() {
         this.popupVisible = false;
       },
+      back() {
+        alert(1);
+        utils.closePg();
+      },
       openPicker() {
         this.$refs.picker.open();
       },
       handleConfirm() {
         this.pickerData = new Date(this.pickerValue).Format("yyyy-MM");
+        this.apiTwo();
+        this.flag = false;
       },
       con1() {
         document.querySelectorAll('.content')[1].removeEventListener('scroll', this.con2);
@@ -798,55 +222,12 @@
       },
       change() {
         this.flag = !this.flag;
-        this.rowList = ['未签到', '已签到', '早退', '未签到', '已签到', '早退', '未签到', '已签到', '早退', '签到'];
 
-        this.list.push(
-          {
-            name: "总结",
-            type: 4,
-            detail: [
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 0
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 1
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 2
-              },
-              {
-                msg: ["fs", "未签到"],
-                type: 3
-              },
-            ]
-          })
+        if (!this.flag) {
+          this.apiTwo();
+        } else {
+          this.apiOne();
+        }
       },
       onValuesChange(picker, values) {
         if (values[0]) {
@@ -865,22 +246,518 @@
         else if (value == 2) {
           if (this.storesNameIn != '') {
             this.storesName = this.storesNameIn;
+
             // 在这里发送网络请求
+            this.apiTwo();
+            this.flag = false;
           }
         }
 
         // 退出蒙版
         this.popupVisible = false;
+      },
+
+      // 统计月报-考情明细
+      apiOne() {
+
+        var _this = this;
+        var params = {
+          month: _this.pickerData,
+          store: _this.storesName
+        };
+        monthlyRportDetail(params).then((res) => {
+
+          /*res = {
+            "code": "1",
+            "msg": "",
+            "data": {
+              "stores": ["天河3店", "天河2店"],
+              "makesure": [{
+                "time": "2017-10-25",
+                "status": "0"
+              }, {
+                "time": "2017-10-26",
+                "status": "0"
+              }, {
+                "time": "2017-10-27",
+                "status": "0"
+              }, {
+                "time": "2017-10-28",
+                "status": "0"
+              }, {
+                "time": "2017-10-29",
+                "status": "0"
+              }, {
+                "time": "2017-10-30",
+                "status": "0"
+              }, {
+                "time": "2017-10-31",
+                "status": "0"
+              }, {
+                "time": "2017-11-01",
+                "status": "0"
+              }, {
+                "time": "2017-11-02",
+                "status": "0"
+              }, {
+                "time": "2017-11-03",
+                "status": "0"
+              }, {
+                "time": "2017-11-04",
+                "status": "0"
+              }, {
+                "time": "2017-11-05",
+                "status": "0"
+              }, {
+                "time": "2017-11-06",
+                "status": "0"
+              }, {
+                "time": "2017-11-07",
+                "status": "0"
+              }, {
+                "time": "2017-11-08",
+                "status": "2"
+              }, {
+                "time": "2017-11-09",
+                "status": "0"
+              }, {
+                "time": "2017-11-10",
+                "status": "0"
+              }, {
+                "time": "2017-11-11",
+                "status": "0"
+              }, {
+                "time": "2017-11-12",
+                "status": "0"
+              }, {
+                "time": "2017-11-13",
+                "status": "0"
+              }, {
+                "time": "2017-11-14",
+                "status": "0"
+              }, {
+                "time": "2017-11-15",
+                "status": "0"
+              }, {
+                "time": "2017-11-16",
+                "status": "0"
+              }, {
+                "time": "2017-11-17",
+                "status": "0"
+              }, {
+                "time": "2017-11-18",
+                "status": "0"
+              }, {
+                "time": "2017-11-19",
+                "status": "0"
+              }, {
+                "time": "2017-11-20",
+                "status": "0"
+              }, {
+                "time": "2017-11-21",
+                "status": "0"
+              }, {
+                "time": "2017-11-22",
+                "status": "0"
+              }, {
+                "time": "2017-11-23",
+                "status": "0"
+              }, {
+                "time": "2017-11-24",
+                "status": "0"
+              }, {
+                "time": "2017-11-25",
+                "status": "0"
+              }, {
+                "time": "2017-11-26",
+                "status": "0"
+              }],
+              "list": [{
+                "name": "陈俊文",
+                "storeuser": 0,
+                "detail": [{
+                  "msg": ["未签到"],
+                  "type": 0
+                }, {
+                  "msg": ["未签到"],
+                  "type": 0
+                }, [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [], {
+                    "msg": ["未签到"],
+                    "type": 0
+                  }, {
+                    "msg": ["未签到"],
+                    "type": 0
+                  }, [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  []
+                ]
+              }, {
+                "name": "黄秀",
+                "storeuser": 0,
+                "detail": [{
+                  "msg": ["未签到"],
+                  "type": 0
+                }, {
+                  "msg": ["未签到"],
+                  "type": 0
+                }, {
+                  "msg": ["未签到"],
+                  "type": 0
+                }, {
+                  "msg": ["未签到"],
+                  "type": 0
+                }, {
+                  "msg": ["未签到"],
+                  "type": 0
+                }, {
+                  "msg": ["未签到"],
+                  "type": 0
+                }, {
+                  "msg": ["未签到"],
+                  "type": 0
+                }, {
+                  "msg": ["未签到"],
+                  "type": 0
+                }, {
+                  "msg": ["未签到"],
+                  "type": 0
+                }, {
+                  "msg": ["未签到"],
+                  "type": 0
+                }, {
+                  "msg": ["已签到", "早退"],
+                  "type": 0
+                }, {
+                  "msg": ["未签到"],
+                  "type": 0
+                }, {
+                  "msg": ["未签到"],
+                  "type": 0
+                }, {
+                  "msg": ["未签到"],
+                  "type": 0
+                }, {
+                  "msg": ["未签到"],
+                  "type": 0
+                }, {
+                  "msg": ["已签退"],
+                  "type": 0
+                }, {
+                  "msg": ["未签到"],
+                  "type": 0
+                }, [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  []
+                ]
+              }, {
+                "name": "付丹伟",
+                "storeuser": 0,
+                "detail": [
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [], {
+                    "msg": ["未签到"],
+                    "type": 0
+                  }, [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  []
+                ]
+              }, {
+                "name": "陈俊升",
+                "storeuser": 0,
+                "detail": [
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [], {
+                    "msg": ["未签到"],
+                    "type": 0
+                  }, {
+                    "msg": ["未签到"],
+                    "type": 0
+                  }, {
+                    "msg": ["未签到"],
+                    "type": 1
+                  }, {
+                    "msg": ["未签到"],
+                    "type": 1
+                  }, {
+                    "msg": ["未签到"],
+                    "type": 1
+                  }, {
+                    "msg": ["未签到"],
+                    "type": 1
+                  }, {
+                    "msg": ["未签到"],
+                    "type": 1
+                  }, [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  []
+                ]
+              }, {
+                "name": "李炜强",
+                "storeuser": 0,
+                "detail": [
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [], {
+                    "msg": ["未签到"],
+                    "type": 0
+                  }, {
+                    "msg": ["未签到"],
+                    "type": 0
+                  }, {
+                    "msg": ["未签到"],
+                    "type": 0
+                  }, {
+                    "msg": ["未签到"],
+                    "type": 0
+                  }, [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  []
+                ]
+              }]
+            }
+          }*/
+          this.loading = false;
+          if (res.code == 1) {
+            _this.rowList = res.data.makesure;
+            _this.list = res.data.list;
+            _this.slots.values = res.data.stores;
+
+            var width = 94 * _this.rowList.length;
+
+            document.querySelectorAll('.column-content')[0].style.width = width + 'px';
+            document.querySelectorAll('.column-content')[1].style.width = width + 'px';
+
+          } else {
+            _this.msgTip = res.msg;
+            _this.pupupSubmit = true;
+          }
+        }).catch((err) => {
+          console.log(err);
+        })
+      },
+      // 统计月报-初始化
+      apiTwo() {
+
+        // 发送网络请求 ->
+        var _this = this;
+        var params = {
+          month: _this.pickerData,
+          store: _this.storesName
+        };
+
+        monthlyReport(params).then((res) => {
+
+          /*res = {
+            "code": "1",
+            "msg": "",
+            "data": {
+              "stores": ["天河3店", "天河2店"],
+              "base_state": ["未签到", "已签到", "早退", "已签退", "休息", "补休", "事假", "病假", "旷工", "年假", "婚假", "产假", "陪产假", "工伤", "丧假"],
+              "list": [{
+                "name": "陈俊文",
+                "detail": [34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+              }, {
+                "name": "黄秀",
+                "detail": [34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+              }, {
+                "name": "总计",
+                "detail": [68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+              }]
+            }
+          }*/
+          this.loading = false;
+          if (res.code == 1) {
+            _this.list = res.data.list;
+            _this.slots[0].values = res.data.stores;
+            _this.rowList = res.data.base_state;
+
+            var width = 94 * _this.rowList.length;
+
+            document.querySelectorAll('.column-content')[0].style.width = width + 'px';
+            document.querySelectorAll('.column-content')[1].style.width = width + 'px';
+          } else {
+            _this.msgTip = res.msg;
+            _this.popupSubmit = true;
+          }
+        }).catch((err) => {
+          console.log(err);
+        })
       }
     },
     mounted() {
-      var width = this.rowList.length * 94;
-      document.querySelectorAll('.column-content')[0].style.width = width + 'px';
-      document.querySelectorAll('.column-content')[1].style.width = width + 'px';
       this.addListener('.content', {
         "callBack": [this.con1, this.con2],
         "event": ["scroll", "scroll"]
       });
+
+//      this.loading = true;
+
+      // 发送网络请求 ->
+      var _this = this;
+      var params = {
+        month: _this.pickerData,
+        store: _this.storesName
+      };
+
+      monthlyReport(params).then((res) => {
+
+        _this.code = res.code;
+        /*res = {
+          "code": "1",
+          "msg": "",
+          "data": {
+            "stores": ["天河3店", "天河2店"],
+            "base_state": ["未签到", "已签到", "早退", "已签退", "休息", "补休", "事假", "病假", "旷工", "年假", "婚假", "产假", "陪产假", "工伤", "丧假"],
+            "list": [{
+              "name": "陈俊文",
+              "detail": [34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "黄秀",
+              "detail": [34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            }, {
+              "name": "总计",
+              "detail": [68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            }]
+          }
+        }*/
+
+        if (res.code == 1) {
+          this.loading = false;
+          _this.list = res.data.list;
+          _this.slots[0].values = res.data.stores;
+          _this.rowList = res.data.base_state;
+          _this.storesName = res.data.stores[0];
+
+          _this.apiTwo();
+
+          var width = 94 * _this.rowList.length;
+
+          document.querySelectorAll('.column-content')[0].style.width = width + 'px';
+          document.querySelectorAll('.column-content')[1].style.width = width + 'px';
+        } else {
+          _this.msgTip = res.msg;
+          _this.popupSubmit = true;
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
+
+      // 移除日期
+      setTimeout(function () {
+        var dom = document.querySelectorAll('.picker-slot-center');
+        if (dom.length == 4) {
+          dom[3].remove();
+        }
+      }, 100)
     }
   }
 </script>
@@ -1050,7 +927,6 @@
     border-width: 1px 1px 0 1px;
     border-color: gainsboro;
     border-style: solid;
-    height: 100%;
     box-sizing: border-box;
     line-height: 45px;
     height: 45px;
@@ -1145,12 +1021,64 @@
   }
 
   .contentC {
-    display: inline-block;
     width: 94px;
     height: 45px;
-    line-height: 45px;
     border-right: 1px solid gainsboro;
     border-bottom: 1px solid gainsboro;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
   }
+
+  .msgTip {
+    .mint-popup {
+      width: 80%;
+    }
+    .maskT {
+      padding: 30px 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      border-radius: 5px;
+      .msgTip {
+        margin-bottom: 20px;
+        color: #ed1204;
+        font-size: 20px;
+      }
+      .footerBtn {
+        width: 100%;
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .mint-button--normal {
+          flex: 1;
+          background: -webkit-gradient(linear, -30% 50%, 30% -50%, from(#ed1204), to(#ed3806));
+          color: white;
+          height: 42px;
+          font-size: 16px;
+        }
+      }
+    }
+  }
+
+  .tipLoading {
+    .mint-popup {
+      width: 100px;
+    }
+    .loading {
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      .isLoading {
+        margin-bottom: 10px;
+      }
+    }
+  }
+
 
 </style>

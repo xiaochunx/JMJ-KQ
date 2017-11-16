@@ -66,6 +66,7 @@
       }
     },
     mounted(){
+
       requresEmployessInfo().then(res => {
         console.log(res);
         if (res.code == 1){

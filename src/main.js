@@ -10,8 +10,13 @@ import 'element-ui/lib/theme-default/index.css'
 import FastClick from 'fastclick'
 import Axios from 'axios'
 
+var wx = require('weixin-js-sdk');
+
+Vue.prototype.wx = wx;
+
 // import element from 'element-ui'
-import { Radio,Input } from 'element-ui'
+import { Radio,Input,RadioGroup } from 'element-ui'
+
 // Vue.use(element);
 
 Vue.prototype.$http = Axios;
@@ -25,6 +30,7 @@ if ('addEventListener' in document) {
 
 Vue.use(Radio);
 Vue.use(Input);
+Vue.use(RadioGroup);
 // 微信标题
 Vue.use(require('vue-wechat-title'));
 

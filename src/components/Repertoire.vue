@@ -71,6 +71,7 @@
             }
           ]
         ],
+        /*list: [],*/
         "code": 1,
         "msg": ""
       }
@@ -82,7 +83,6 @@
       }
     },
     mounted(){
-
       requestAllFunction().then((res) => {
         if (res.code == 1){
           this.loading = false;

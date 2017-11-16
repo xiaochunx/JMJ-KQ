@@ -76,6 +76,7 @@
 <script>
 
   import { requresEmployessinitialize,requresEmployessPostMsg } from '../../../api/api'
+  import utils from '@/utils/common.js'
 
   export default {
     data(){
@@ -95,7 +96,8 @@
             className: 'slot1',
             textAlign: 'center'
           }
-        ]
+        ],
+        submitSuc: false        // 是否提交成功
       }
     },
     methods: {
@@ -110,6 +112,7 @@
       },
       submit(){
         var flag = true;
+        var _this = this;
 
         if (this.education == "" || this.password == "" || this.username == "" || this.Tel == "" || this.IDCode == ""){
           flag = false
@@ -127,8 +130,16 @@
 
 
           requresEmployessPostMsg(params).then((res) => {
+
             this.popupSubmit = true;
             this.msgTip = res.msg;
+
+            // 提交成功 || code -> 3,4,-1,退出公众号
+            if (res.code == 1 || res.code == 3 || res.code == 4 || red.code == -1){
+              // 关闭窗口
+               _this.submitSuc = true;
+            }
+
           }).catch((error) => {
             console.log(error);
           });
@@ -139,12 +150,22 @@
         }
       },
       sure(){
+        if (this.submitSuc){
+
+          this.wx.config({
+            jsApiList: [
+              'closeWindow'
+            ]
+          });
+          this.wx.ready(function () {
+            // 在这里调用 API
+            this.wx.closeWindow();
+          });
+        }
         this.popupSubmit = false;
       }
     },
     mounted(){
-
-
       requresEmployessinitialize().then((res) => {
         console.log(res);
         if (res.code == 1){
