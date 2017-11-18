@@ -139,7 +139,7 @@
       },
       sure() {
         if (this.code == -1 || this.code == 3 || this.code == 4){
-           this.$router.push('/');
+          this.wx.closeWindow();
         }else {
           this.popupVisible = false;
         }
@@ -229,6 +229,8 @@
               ]
             }
           }*/
+          _this.code = res.code;
+
           if (res.code == 1) {
             _this.storesName = res.data.stores[0];
             _this.slots[0].values = res.data.stores;

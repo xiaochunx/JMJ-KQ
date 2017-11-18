@@ -18,14 +18,14 @@
 
     <div class="middle">
       <div class="mTop">
-        <img :src="'./static/employees/top.jpg'" alt="图片不见啦" style="width: 217.5px;height: 123.5px;margin-left: 80px">
+        <img :src="'./static/employees/top.jpg'" alt="Image is not found..try again later please.." style="width: 217.5px;height: 123.5px;margin-left: 80px">
       </div>
       <div class="mMid">
         <!--<img :src="'./static/employees/middle.png'" alt="图片不见啦" style="width: 151px;height: 163px">-->
         <img :src="imgSrc" alt="图片不见啦" style="width: 151px;height: 163px">
       </div>
       <div class="mFoo">
-        <img :src="'./static/employees/bottom.png'" alt="图片不见啦" style="width: 245px;height: 173px">
+        <img :src="'./static/employees/bottom.png'" alt="Image is not found..try again later please.." style="width: 245px;height: 173px">
       </div>
     </div>
 
@@ -55,7 +55,27 @@
         loading: false,
         imgSrc: "",
         title: "天河店-前厅",
-        goUrl: ""
+        goUrl: "",
+        data: {
+          "code": "1",
+          "msg": "",
+          "data": {
+            "store_info": {
+              "areaid": "3",
+              "name": "青口测试门店1",
+              "longitude": "113.329470",
+              "latitude": "23.138594"
+            },
+            "signpackage": {
+              "appId": "wx9fad84f36b3a2463",
+              "nonceStr": "ksijuzi4SWgLDRsf",
+              "timestamp": 1510814347,
+              "url": "http:\/\/kq.7kou.cn\/kqhtml\/index.html",
+              "signature": "17ddf104904d97ccc8244def6e8def94c0a6cd7e",
+              "rawString": "jsapi_ticket=52Tw1_qSfGvjmabRE6VHqcXS02tIVfw4yUxK9UaA8K9Uh7hsd7DQjvjQfraLLAXgIpbC8AYt5xzDeaNLuBOwhg&noncestr=ksijuzi4SWgLDRsf&timestamp=1510814347&url=http:\/\/kq.7kou.cn\/kqhtml\/index.html"
+            }
+          }
+        }
       }
     },
     methods: {

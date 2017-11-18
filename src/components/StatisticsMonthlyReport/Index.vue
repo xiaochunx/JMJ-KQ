@@ -167,7 +167,8 @@
     methods: {
       sureBtn() {
         if (this.code == -1 || this.code == 3 || this.code == 4) {
-          this.$router.push('/');
+          /*this.$router.push('/');*/
+          this.wx.closeWindow();
         }
         this.popupSubmit = false;
       },
@@ -896,9 +897,14 @@
     align-items: center;
   }
 
+  .box{
+    height: 80%;
+  }
+
   #table {
     text-align: center;
     width: 100%;
+    height: 100%;
     overflow: hidden;
     background-color: #fff;
   }
@@ -909,7 +915,7 @@
   }
 
   #body {
-    height: 450px;
+    height : calc(~"100% - 45px");
     overflow-x: hidden;
   }
 

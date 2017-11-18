@@ -67,6 +67,7 @@
           longitude: 113.30764968,
           latitude: 23.1200491
         },
+        signpackage: {}
       }
     },
     methods: {
@@ -102,7 +103,7 @@
 
       },
       getCur(){
-        this.loading = true;
+        /*this.loading = true;
         this.pupupMsg = "加载数据中...";
         var _this = this;
 
@@ -130,7 +131,75 @@
           complete(){
 
           }
+        });*/
+
+        this.loading = true;
+        var _this = this;
+
+        // 配置微信
+        _this.wx.config({
+          appId: _this.signpackage.appId,
+          nonceStr: _this.signpackage.nonceStr,
+          timestamp: _this.signpackage.timestamp,
+          signature: _this.signpackage.signature,
+          jsApiList: [
+            'openLocation', 'getLocation', 'checkJsApi'
+          ]
         });
+
+        // config成功之后会调用这个方法
+        _this.wx.ready(function () {
+          _this.wx.getLocation({
+            type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+            success: function (res) {
+
+              window.clearInterval(_this.timer);
+
+              _this.store_info.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+              _this.store_info.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+              var speed = res.speed; // 速度，以米/每秒计
+              var accuracy = res.accuracy; // 位置精度
+
+              _this.pupupMsg = "获取位置成功!";
+
+              setTimeout(function () {
+                _this.loading = false;
+              },500)
+            },
+            error(err){
+              _this.pupupMsg = "获取位置失败!";
+            }
+          });
+        });
+
+
+        // 多次请求位置信息(4s一次)
+        _this.timer = setInterval(function () {
+          // config成功之后会调用这个方法
+          _this.wx.ready(function () {
+            _this.wx.getLocation({
+              type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+              success: function (res) {
+
+                window.clearInterval(_this.timer);
+
+                _this.store_info.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                _this.store_info.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                var speed = res.speed; // 速度，以米/每秒计
+                var accuracy = res.accuracy; // 位置精度
+
+                _this.pupupMsg = "获取位置成功!";
+
+                setTimeout(function () {
+                  _this.loading = false;
+                },500)
+              },
+              error(err){
+                _this.pupupMsg = "获取位置失败!";
+              }
+            });
+          });
+        },4000);
       }
     },
     mounted() {
@@ -138,10 +207,13 @@
       this.loading = true;
       var _this = this;
       requestStoresInitialize().then((res) => {
+        this.loading = false;
         if (res.code == 1) {
 
           _this.store_info = res.data.store_info;
-          var appId = res.data.signpackage.appId;
+          _this.signpackage = res.data.signpackage;
+
+          /*var appId = res.data.signpackage.appId;
           var nonceStr = res.data.signpackage.nonceStr;
           var timestamp = res.data.signpackage.timestamp;
           var signature = res.data.signpackage.signature;
@@ -212,7 +284,7 @@
                 }
               });
             });
-          },4000);
+          },4000);*/
 
         }else {
           _this.pupupMsg = res.msg;

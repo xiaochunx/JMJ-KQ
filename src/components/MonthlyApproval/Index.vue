@@ -10,7 +10,7 @@
       </div>
       <div class="topBtn" style="margin-left: 10px" @click="openPopup">
         <img :src="'./static/storesDaily/dian.png'" width="24" height="24" style="margin-right: 20px">
-        <span>{{storesName}}</span>
+        <span :class="{'smallSize' : storesName.length > 5}">{{storesName}}</span>
         <span>
           <img :src="'./static/storesDaily/xiala.png'" alt="" style="width: 14px;height: 10px">
         </span>
@@ -30,12 +30,11 @@
           <div class="titleMsg" @click="open(index)">
             <!--<span v-if="item.type == 0" style="color: orange">{{item.state}}</span>-->
             <!--<span v-if="item.type == 1" style="color: deepskyblue">{{item.state}}</span>-->
-            <span>{{item.state}}</span>
+            <span :class="{'rColor' : item.state == '未处理','fColor' : item.state == '已通过' }">{{item.state}}</span>
           </div>
         </div>
       </div>
     </div>
-
 
     <!--日期选择框-->
     <div class="store">
@@ -77,7 +76,7 @@
           <span class="item margin">店长： <span class="gColor">{{value.name}}</span></span>
           <span class="item margin">申请时间： <span class="gColor">{{value.time}}</span></span>
           <span class="item margin">状态： <span
-            :class="{rColor : value.state == '未处理',fColor : value.state == '已通过' }">{{value.state}}</span></span>
+            :class="{'rColor' : value.state == '未处理','fColor' : value.state == '已通过' }">{{value.state}}</span></span>
         </div>
         <div class="footerPopup">
           <span class="item margin" style="margin-bottom: 8px">申请详情:</span>
@@ -96,7 +95,7 @@
           </el-input>
         </div>-->
 
-        <div class="footerBtnBox">
+        <div class="footerBtnBox" v-if="value.state == '未处理'">
           <div class="footerBtn">
             <mt-button size="small" @click="through(1)">通过</mt-button>
           </div>
@@ -153,72 +152,18 @@
         pickerValue: "",                                   // 日期 -> 未转化
         titleList: ["门店", "店长", "申请时间", "状态"],         // 表格标题内容
         code: null,
-        list: [
-          /*{
-            store: "天河3店",
-            name: "李炜强",
-            state: "未处理",
-            time: "2017-11-04 19:12:00",
-            logid: "1|2|3",
-            detail: [
-              "黄秀,2017-11-04,未签到,已签到",
-              "黄秀,2017-11-04,已签到,已签到+早退",
-              "黄秀,2017-11-04,已签到+早退,已签到+早退"
-            ]
-          },
-          {
-            store: "天河3店",
-            name: "李炜强",
-            state: "已通过",
-            time: "2017-11-04 19:12:00",
-            logid: "1|2|3",
-            detail: [
-              "黄秀,2017-11-04,未签到,已签到",
-              "黄秀,2017-11-04,已签到,已签到+早退",
-              "黄秀,2017-11-04,已签到+早退,已签到+早退"
-            ]
-          },
-          {
-            store: "天河3店",
-            name: "李炜强",
-            state: "已通过",
-            time: "2017-11-04 19:12:00",
-            logid: "1|2|3",
-            detail: [
-              "黄秀,2017-11-04,未签到,已签到",
-              "黄秀,2017-11-04,已签到,已签到+早退",
-              "黄秀,2017-11-04,已签到+早退,已签到+早退"
-            ]
-          },
-          {
-            store: "天河3店",
-            name: "李炜强",
-            state: "已通过",
-            time: "2017-11-04 19:12:00",
-            logid: "1|2|3",
-            detail: [
-              "黄秀,2017-11-04,未签到,已签到",
-              "黄秀,2017-11-04,已签到,已签到+早退",
-              "黄秀,2017-11-04,已签到+早退,已签到+早退"
-            ]
-          },
-          {
-            store: "天河3店",
-            name: "李炜强",
-            state: "已通过",
-            time: "2017-11-04 19:12:00",
-            logid: "1|2|3",
-            detail: [
-              "黄秀,2017-11-04,未签到,已签到",
-              "黄秀,2017-11-04,已签到,已签到+早退",
-              "黄秀,2017-11-04,已签到+早退,已签到+早退"
-            ]
-          },*/
-        ],                                      // 内容列表
+        list: [/*{
+          "store": "青口测试门店1",
+          "name": "江颖",
+          "state": "已通过",
+          "time": "2017-11-16 18:22:12",
+          "logid": "31|39|40|41|44|45|46|47|48|49|50|51|52|53|54|55",
+          "detail": ["黄秀,2017-11-10,未签到+已签到,未签到+休息", "黄秀,2017-11-01,未签到,婚假+产假", "ghj,2017-11-15,未签到,已签到", "李炜强,2017-11-15,未签到,已签到+产假", "ghj,2017-11-15,已签到,已签退", "陈俊升,2017-11-15,年假+婚假,休息+补休", "李炜强,2017-11-15,已签到+产假,未签到+病假", "李炜强,2017-11-15,未签到+病假,未签到+补休", "陈俊文店,2017-11-15,未签到,病假+旷工", "陈吴斌,2017-11-15,未签到,旷工+婚假", "hsjsj,2017-11-15,未签到,已签退+产假", "hh,2017-11-16,未签到,事假", "黄秀,2017-11-16,未签到,未签到+已签到", "江颖,2017-11-16,未签到,未签到+已签退", "陈俊升,2017-11-16,未签到,未签到+产假", "黄秀,2017-11-16,未签到+已签到,已签到+年假"]
+        }*/],                                       // 内容列表
         slots: [
           {
             flex: 1,
-            values: ['天河北', '天河北店', '天河北店', '天河北店', '天河北店', '天河北店'],
+            values: [/*'天河北', '天河北店', '天河北店', '天河北店', '天河北店', '天河北店'*/],
             className: 'slot1',
             textAlign: 'center'
           }],                                      // 门店列表
@@ -266,7 +211,8 @@
       // 消息提示确认按钮
       sure() {
         if (this.code == -1 || this.code == 3 || this.code == 4) {
-          this.$router.push('/');
+          /*this.$router.push('/');*/
+          this.wx.closeWindow();
         } else {
           this.popupMsgTip = false;
           this.apiInitialize();
@@ -315,13 +261,16 @@
         var _this = this;
 
         var params = {
-          month: this.pickerData,
+          month: _this.pickerData,
           store: _this.storesName
         };
 
         monthlyApprovalInitialize(params).then((res) => {
 
-          coderes = {
+          _this.code = res.code;
+          _this.loading = false;
+
+          /*res = {
             "code": "1",
             "msg": "数据获取成功",
             "data": {
@@ -355,9 +304,26 @@
                 }
               ]
             }
-          }
+          }*/
+
+          /*res = {
+            "code": "1",
+            "msg": "",
+            "data": {
+              "stores": ["青口测试门店1", "青口测试门店2"],
+              "list": [{
+                "store": "青口测试门店1",
+                "name": "江颖",
+                "state": "已通过",
+                "time": "2017-11-16 18:22:12",
+                "logid": "31|39|40|41|44|45|46|47|48|49|50|51|52|53|54|55",
+                "detail": ["黄秀,2017-11-10,未签到+已签到,未签到+休息", "黄秀,2017-11-01,未签到,婚假+产假", "ghj,2017-11-15,未签到,已签到", "李炜强,2017-11-15,未签到,已签到+产假", "ghj,2017-11-15,已签到,已签退", "陈俊升,2017-11-15,年假+婚假,休息+补休", "李炜强,2017-11-15,已签到+产假,未签到+病假", "李炜强,2017-11-15,未签到+病假,未签到+补休", "陈俊文店,2017-11-15,未签到,病假+旷工", "陈吴斌,2017-11-15,未签到,旷工+婚假", "hsjsj,2017-11-15,未签到,已签退+产假", "hh,2017-11-16,未签到,事假", "黄秀,2017-11-16,未签到,未签到+已签到", "江颖,2017-11-16,未签到,未签到+已签退", "陈俊升,2017-11-16,未签到,未签到+产假", "黄秀,2017-11-16,未签到+已签到,已签到+年假"]
+              }]
+            }
+          }*/
 
           if (res.code == 1) {
+
             _this.list = res.data.list;
             _this.slots[0].values = res.data.stores;
           } else {
@@ -371,9 +337,8 @@
       // 审批月报-审批
       apiPost(params) {
 
-        this.loading = true;
-
         var _this = this;
+        this.loading = true;
 
         monthlyApprovalPost(params).then((res) => {
           /*res = {
@@ -381,7 +346,7 @@
             msg: "处理成功"
           };*/
 
-          this.loading = false;
+          _this.loading = false;
           _this.popupDetail = false;
           _this.msgTip = res.msg;
           _this.popupMsgTip = true;
@@ -406,44 +371,26 @@
           "code": "1",
           "msg": "",
           "data": {
-            "stores": [
-              "天河3店",
-              "天河2店"
-            ],
-            "list": [
-              {
-                "store": "天河3店",
-                "name": "李炜强",
-                "state": "已通过",
-                "time": "2017-11-04 19:12:00",
-                "logid": "1|2|3",
-                "detail": [
-                  "黄秀,2017-11-04,未签到,已签到",
-                  "黄秀,2017-11-04,已签到,已签到+早退",
-                  "黄秀,2017-11-04,已签到+早退,已签到+早退"
-                ]
-              },
-              {
-                "store": "天河3店",
-                "name": "李炜强",
-                "state": "未处理",
-                "time": "2017-11-08 02:45:55",
-                "logid": "5|6",
-                "detail": [
-                  "李炜强,2017-11-08,未签到,病假+旷工",
-                  "黄秀,2017-11-08,未签到,病假+旷工"
-                ]
-              }
-            ]
+            "stores": ["青口测试门店1", "青口测试门店2"],
+            "list": [{
+              "store": "青口测试门店1",
+              "name": "江颖",
+              "state": "已通过",
+              "time": "2017-11-16 18:22:12",
+              "logid": "31|39|40|41|44|45|46|47|48|49|50|51|52|53|54|55",
+              "detail": ["黄秀,2017-11-10,未签到+已签到,未签到+休息", "黄秀,2017-11-01,未签到,婚假+产假", "ghj,2017-11-15,未签到,已签到", "李炜强,2017-11-15,未签到,已签到+产假", "ghj,2017-11-15,已签到,已签退", "陈俊升,2017-11-15,年假+婚假,休息+补休", "李炜强,2017-11-15,已签到+产假,未签到+病假", "李炜强,2017-11-15,未签到+病假,未签到+补休", "陈俊文店,2017-11-15,未签到,病假+旷工", "陈吴斌,2017-11-15,未签到,旷工+婚假", "hsjsj,2017-11-15,未签到,已签退+产假", "hh,2017-11-16,未签到,事假", "黄秀,2017-11-16,未签到,未签到+已签到", "江颖,2017-11-16,未签到,未签到+已签退", "陈俊升,2017-11-16,未签到,未签到+产假", "黄秀,2017-11-16,未签到+已签到,已签到+年假"]
+            }]
           }
         }*/
 
-        _this.loading = false;
         _this.code = res.code;
+
         if (res.code == 1) {
           _this.list = res.data.list;
           _this.slots[0].values = res.data.stores;
           _this.storesName = res.data.stores[0];
+          _this.apiInitialize();
+
         } else {
           _this.msgTip = res.msg;
           _this.popupMsgTip = true;
@@ -549,6 +496,8 @@
       }
       .footerPopup {
         margin-top: 16px;
+        max-height: 150px;
+        overflow: auto;
         display: flex;
         flex-direction: column;
         margin-bottom: 7px;

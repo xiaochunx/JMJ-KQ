@@ -20,6 +20,9 @@ import { Radio,Input,RadioGroup } from 'element-ui'
 // Vue.use(element);
 
 Vue.prototype.$http = Axios;
+Axios.defaults.withCredentials = true;
+
+
 
 if ('addEventListener' in document) {
   document.addEventListener('DOMContentLoaded', function() {

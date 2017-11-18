@@ -472,6 +472,7 @@
       background-color: rgb(245, 245, 245);
     }
     .titleName, .titleMsg {
+      position: relative;
       background-color: #fff;
       margin-bottom: 1px;
       flex: 1;
@@ -483,6 +484,10 @@
       align-items: center;
       font-weight: 200;
       font-size: 14px;
+      img{
+        position: absolute;
+        right: 20px;
+      }
     }
 
     // footer

@@ -81,7 +81,7 @@
         popupVisible: false,               // popup弹窗
         popupSubmit: false,                // 提交弹窗
         msgTip: "",                        // 提示信息
-        endDate: new Date(),               // 开始日期的结束时间
+        endDate: new Date("2020-01-01"),               // 开始日期的结束时间
         pickerValue1: "",                  // 开始日期选中值,未转化
         pickerValue2: "",                  // 结束日期选中值,未转化
         authorizedMan: "",                 // 授权人员
@@ -148,9 +148,17 @@
             end: _this.endTime
           };
 
+
           dailySave(params).then((res) => {
-            this.msgTip = res.msg;
-            this.popupSubmit = true;
+
+            _this.msgTip = res.msg;
+            _this.popupSubmit = true;
+            if (res.code == 1){
+              // 修改成功 -> 更改成功
+              _this.start[_this.index] = _this.beginTime;
+              _this.end[_this.index] = _this.endTime;
+            }
+
           }).catch((err) => {
             console.log(err);
           });
@@ -160,7 +168,8 @@
       },
       sure() {
         if (this.code == -1 || this.code == 3 || this.code == 4) {
-          this.$router.push('/');
+          /*this.$router.push('/');*/
+          this.wx.closeWindow();
         } else {
           this.popupSubmit = false;
         }
@@ -194,7 +203,7 @@
 
         _this.code = res.code;
 
-        res = {
+        /*res = {
           "code": "1",
           "msg": "",
           "data": [{
@@ -246,7 +255,7 @@
             "start": "",
             "end": ""
           }]
-        }
+        }*/
 
         if (res.code == 1) {
           var people = [];

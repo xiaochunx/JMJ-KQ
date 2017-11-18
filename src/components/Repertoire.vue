@@ -9,19 +9,33 @@
       </mt-index-section>
     </mt-index-list>
 
-
+    <mt-popup
+      v-model="popupSubmit"
+      :closeOnClickModal="false"
+    >
+      <div class="maskT">
+        <div class="msgTip">{{msgTip}}</div>
+        <div class="footerBtn">
+          <mt-button @click="sureBtn">确认</mt-button>
+        </div>
+      </div>
+    </mt-popup>
   </div>
 </template>
 
 <script>
-  import { requestAllFunction } from '../api/api'
+  import {requestAllFunction} from '../api/api'
+
   export default {
     data() {
       return {
+        popupSubmit: false,
         loading: true,
+        msgTip: "",
         tipMsg: "正在加载中...",
+        code: null,
         list: [
-          [
+          /*[
             {
               name: "邀请员工",
               url: "/InviteEmployees",
@@ -69,30 +83,35 @@
               url: "/ModifyLog",
               src: "./static/repertoire/ModifyLog.png"
             }
-          ]
+          ]*/
         ],
-        /*list: [],*/
-        "code": 1,
-        "msg": ""
       }
     },
     components: {},
     methods: {
-      changes(url) {
-        this.$router.push(url);
+      sureBtn() {
+        if (this.code == -1 || this.code == 3 || this.code == 4 || this.code == 2) {
+          this.wx.closeWindow();
+        } else {
+          this.popupSubmit = false;
+        }
       }
     },
-    mounted(){
+    mounted() {
+      var _this = this;
+
       requestAllFunction().then((res) => {
-        if (res.code == 1){
-          this.loading = false;
-          this.list = res.data;
-        }else{
-          var _this = this;
-          this.tipMsg = res.msg;
-          window.setTimeout(function () {
-            _this.loading = false;
-          },800);
+
+        _this.code = res.code;
+        _this.msgTip = res.msg;
+        if (res.code == 1) {
+          _this.loading = false;
+          _this.list = res.data;
+        } else {
+          _this.tipMsg = res.msg;
+
+          _this.popupSubmit = true;
+
         }
       })
         .catch((error) => {
@@ -115,8 +134,37 @@
         }
       }
     }
-    .mint-indexlist-nav{
+    .mint-indexlist-nav {
       display: none !important;
+    }
+  }
+
+  .maskT {
+    width: 220px;
+    padding: 30px 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 5px;
+    .msgTip {
+      margin-bottom: 20px;
+      color: #ed1204;
+      font-size: 20px;
+    }
+    .footerBtn {
+      width: 100%;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .mint-button--normal {
+        flex: 1;
+        background: -webkit-gradient(linear, -30% 50%, 30% -50%, from(#ed1204), to(#ed3806));
+        color: white;
+        height: 42px;
+        font-size: 16px;
+      }
     }
   }
 </style>

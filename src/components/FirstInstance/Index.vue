@@ -8,9 +8,9 @@
       <div class="middle">
 
         <div class="item gColor" v-for="(value,index) in list">
-          <img v-if="typeof(value.imgSrc) != 'undefined'" :src="value.imgSrc" alt=""
+          <img v-if="value.imgSrc != null" :src="value.imgSrc" alt=""
                style="width: 60px;height: 60px;border-radius: 100px">
-          <img v-if="typeof(value.imgSrc) == 'undefined'" :src="'./static/bg_button_review_hl_15x25_@2x.png'" alt=""
+          <img v-if="value.imgSrc == null" :src="'./static/pfb_orderTab_collection_empty_76x53_@2x.png'" alt=""
                style="width: 60px;height: 60px;border-radius: 100px">
 
           <div class="radio">
@@ -79,7 +79,7 @@
 </template>
 <script>
 
-  import {firstInstanceInitialize, firstInstanceSave} from '../../api/api.js'
+  import { firstInstanceInitialize, firstInstanceSave } from '../../api/api.js'
 
   export default {
     data() {
@@ -91,7 +91,7 @@
         name: "",         // 当前选中用户名
         list: [
           {
-            imgSrc: "./static/bg_button_review_hl_15x25_@2x.png",
+            imgSrc: "./static/pfb_orderTab_collection_empty_76x53_@2x.png",
             name: "李炜强",
             id: 2,
           },
@@ -149,8 +149,8 @@
         pickerValue: "",
         pickerData: new Date().Format("yyyy-MM-dd"),
         endDate: new Date(),
-        flag: true,     // 防止多次请求
-        id: 0,           // 记录当前选中id
+        flag: true,       // 防止多次请求
+        id: 0,            // 记录当前选中id
         code: null        // 记录当前返回code值
       }
     },
@@ -182,11 +182,11 @@
             _this.flag = true;
           }, 50)
         }
-
       },
       sure() {
         if (this.code == -1 || this.code == 3 || this.code == 4){
-          this.$router.push('/');
+          /*this.$router.push('/');*/
+          this.wx.closeWindow();
         }
         this.popupSubmit = false;
       },
@@ -255,6 +255,7 @@
           _this.loading = false;
           _this.msgTip = res.msg;
           _this.popupSubmit = true;
+
         }).catch((err) => {
           console.log(err);
         })
@@ -342,7 +343,7 @@
 
   .tip {
     height: 10%;
-    padding: 15px 25px 0 25px;
+    padding: 6% 25px 0 25px;
     margin-top: 1px;
     background-color: white;
     font-size: 15px;
@@ -370,9 +371,10 @@
 
   // footer
   .footer {
-    height: 17%;
+    height: 18%;
     display: flex;
-    padding-bottom: 24px;
+    padding-bottom: 2px;
+    padding-top: 10px;
     background: white;
     .footerBtn {
       padding: 0 40px;

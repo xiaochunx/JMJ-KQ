@@ -144,3 +144,13 @@ textarea::-webkit-input-placeholder {
 .msgTip {
   font-size: 16px !important;
 }
+
+/*radio选中颜色修改*/
+.el-radio__input.is-checked .el-radio__inner{
+  border-color: gainsboro !important;
+  background: gainsboro !important;
+}
+
+.el-radio__inner:hover{
+  border-color: gainsboro !important;
+}

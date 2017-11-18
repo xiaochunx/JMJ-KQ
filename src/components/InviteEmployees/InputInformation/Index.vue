@@ -137,7 +137,7 @@
             // 提交成功 || code -> 3,4,-1,退出公众号
             if (res.code == 1 || res.code == 3 || res.code == 4 || red.code == -1){
               // 关闭窗口
-               _this.submitSuc = true;
+              _this.submitSuc = true;
             }
 
           }).catch((error) => {
@@ -151,16 +151,7 @@
       },
       sure(){
         if (this.submitSuc){
-
-          this.wx.config({
-            jsApiList: [
-              'closeWindow'
-            ]
-          });
-          this.wx.ready(function () {
-            // 在这里调用 API
-            this.wx.closeWindow();
-          });
+          this.wx.closeWindow();
         }
         this.popupSubmit = false;
       }
