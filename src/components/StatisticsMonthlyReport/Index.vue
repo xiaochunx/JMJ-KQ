@@ -50,7 +50,9 @@
             <div class="column-content contentMsg">
               <div v-if="!flag" v-for="(value,index1) in list">
                 <span v-for="(item,index) in value.detail" style="width: 94px;display: inline-block;float: left;">
-                  <span class="contentC">{{item}}</span>
+                  <span class="contentC"
+                        :class="{'red': item.type == 1,'yellow': item.type == 2,'plum': item.type == 3,'skyblue': item.type == 4,'greenyellow': item.type == 5,'bgOne': item.status == 0,'bgTwo': item.status == 1,'bgThree': item.status == 2,'bgFour': item.status == 3}"
+                  >{{item}}</span>
                 </span>
               </div>
 
@@ -58,7 +60,9 @@
                 <span v-for="(item,index) in value.detail"
                       style="width: 94px;height: 46px; display: inline-block;float: left"
                       @click="open(index1,index)">
-                  <span class="contentC">{{item.msg | FormatDate}}</span>
+                  <span class="contentC"
+                        :class="{'red': item.type == 1,'yellow': item.type == 2,'plum': item.type == 3,'skyblue': item.type == 4,'greenyellow': item.type == 5,'bgOne': item.status == 0,'bgTwo': item.status == 1,'bgThree': item.status == 2,'bgFour': item.status == 3}"
+                  >{{item.msg | FormatDate}}</span>
                 </span>
               </div>
             </div>
@@ -141,7 +145,7 @@
         popupVisible: false,
         popupSubmit: false,
         storesNameIn: "",
-        pickerValue: "",
+        pickerValue: new Date().Format("yyyy-MM-dd"),
         msgTip: "",
         pickerData: new Date().Format("yyyy-MM"),
         list: [
@@ -765,7 +769,7 @@
 <style lang="less" scoped>
   #statistics {
     height: 100%;
-    font-weight: 200;
+    /*font-weight: 200;*/
     .top {
       padding: 8px;
       display: flex;
@@ -1028,13 +1032,14 @@
 
   .contentC {
     width: 94px;
-    height: 45px;
+    height: 46px;
     border-right: 1px solid gainsboro;
     border-bottom: 1px solid gainsboro;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
+    box-sizing: border-box;
   }
 
   .msgTip {

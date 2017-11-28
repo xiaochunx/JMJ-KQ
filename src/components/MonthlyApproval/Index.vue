@@ -149,7 +149,7 @@
         popupMsgTip: false,                                // 消息提示弹窗
         endDate: new Date(),                               // 日期选项结束日期
         popupVisible: false,                               // 门店选择框是否展示
-        pickerValue: "",                                   // 日期 -> 未转化
+        pickerValue: new Date().Format("yyyy-MM-dd"),        // 日期 -> 未转化
         titleList: ["门店", "店长", "申请时间", "状态"],         // 表格标题内容
         code: null,
         list: [/*{
@@ -365,6 +365,14 @@
         month: this.pickerData,
         store: _this.storesName
       };
+
+      // 移除日期控件
+      setTimeout(function () {
+        var dom = document.querySelectorAll('.picker-slot-center');
+        if (dom.length == 4) {
+          dom[2].remove();
+        }
+      }, 100)
 
       monthlyApprovalInitialize(params).then((res) => {
         /*res = {

@@ -9,9 +9,9 @@
 
         <div class="item gColor" v-for="(value,index) in list">
           <img v-if="value.imgSrc != null" :src="value.imgSrc" alt=""
-               style="width: 60px;height: 60px;border-radius: 100px">
+               style="width: 50px;height: 50px;border-radius: 100px">
           <img v-if="value.imgSrc == null" :src="'./static/pfb_orderTab_collection_empty_76x53_@2x.png'" alt=""
-               style="width: 60px;height: 60px;border-radius: 100px">
+               style="width: 50px;height: 50px;border-radius: 100px">
 
           <div class="radio">
             <el-radio-group v-model="radio" @change="test">
@@ -146,7 +146,7 @@
         ],
         radio: '1',
         textarea: "",
-        pickerValue: "",
+        pickerValue: new Date().Format("yyyy-MM-dd"),
         pickerData: new Date().Format("yyyy-MM-dd"),
         endDate: new Date(),
         flag: true,       // 防止多次请求

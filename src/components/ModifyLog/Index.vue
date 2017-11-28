@@ -99,7 +99,7 @@
         popupSubmit: false,
         msgTip: "",
         popupVisible: false,                       // popup弹窗
-        pickerValue: "",                           // 日期 -> 未转化
+        pickerValue: new Date().Format("yyyy-MM-dd"),                           // 日期 -> 未转化
         storesNameIn: "",                          // 临时存储门店名称
         pickerData: new Date().Format("yyyy-MM"),
         storesName: "天河北店",                     // 门店名称

@@ -37,6 +37,7 @@
 
           <div class="content">
             <div class="column-content contentMsg">
+
               <div v-if="!flag" v-for="(value,index1) in list">
                 <span v-for="(item,index) in value.detail" style="width: 94px;height: 46px; display: inline-block;float: left;" @click="item.canedit == 1 && open(index1,index)">
                   <!--<span v-if="item.type == 0" style="color: #ed1204" class="contentC">{{item.msg | FormatDate}}
@@ -56,7 +57,9 @@
                     <img :src="'./static/storesDaily/edit.png'" width="15" height="15" style="margin-left: 5px;position: absolute;
     right: 2px;top: 2px;">
                   </span>-->
-                  <span class="contentC">{{item.msg | FormatDate}}
+                  <span class="contentC"
+                        :class="{'red': item.type == 1,'yellow': item.type == 2,'plum': item.type == 3,'skyblue': item.type == 4,'greenyellow': item.type == 5,'bgOne': item.status == 0,'bgTwo': item.status == 1,'bgThree': item.status == 2,'bgFour': item.status == 3}"
+                  >{{item.msg | FormatDate}}
                     <img v-if="item.canedit == 1" :src="'./static/storesDaily/edit.png'" width="15" height="15" style="margin-left: 5px;position: absolute;
     right: 2px;top: 2px;">
                   </span>
@@ -66,7 +69,9 @@
               <div v-if="flag" v-for="(value,index1) in list">
                 <span v-for="(item,index) in value.detail" style="width: 94px;height: 46px; display: inline-block;float: left;"
                       @click="item.canedit == 1 && open(index1,index)">
-                  <span class="contentC">{{item}}</span>
+                  <span class="contentC"
+                        :class="{'red': item.type == 1,'yellow': item.type == 2,'plum': item.type == 3,'skyblue': item.type == 4,'greenyellow': item.type == 5,'bgOne': item.status == 0,'bgTwo': item.status == 1,'bgThree': item.status == 2,'bgFour': item.status == 3}"
+                  >{{item}}</span>
                 </span>
               </div>
             </div>
@@ -165,7 +170,7 @@
         loading: false,
         popupVisible: false,   // 控制蒙版的显隐
         popupSubmit: false,
-        pickerValue: "",
+        pickerValue: new Date().Format("yyyy-MM-dd"),
         msgTip: "",            // 提示弹窗
         indexI: 0,
         indexJ: 0,
@@ -563,7 +568,6 @@
         var arr = [];
         monthlyReportInitialize(params).then((res) => {
 
-          _this.code = res.code;
           /*res = {
             "code": "1",
             "msg": "",
@@ -597,7 +601,7 @@
                 "status": "0"
               }, {
                 "time": "2017-11-04",
-                "status": "1"
+                "status": "0"
               }, {
                 "time": "2017-11-05",
                 "status": "0"
@@ -609,28 +613,28 @@
                 "status": "0"
               }, {
                 "time": "2017-11-08",
-                "status": "1"
+                "status": "0"
               }, {
                 "time": "2017-11-09",
                 "status": "0"
               }, {
                 "time": "2017-11-10",
-                "status": "1"
+                "status": "0"
               }, {
                 "time": "2017-11-11",
-                "status": "1"
+                "status": "0"
               }, {
                 "time": "2017-11-12",
-                "status": "1"
+                "status": "0"
               }, {
                 "time": "2017-11-13",
                 "status": "0"
               }, {
                 "time": "2017-11-14",
-                "status": "1"
+                "status": 1
               }, {
                 "time": "2017-11-15",
-                "status": "1"
+                "status": 1
               }, {
                 "time": "2017-11-16",
                 "status": "0"
@@ -639,16 +643,16 @@
                 "status": "0"
               }, {
                 "time": "2017-11-18",
-                "status": "0"
+                "status": 1
               }, {
                 "time": "2017-11-19",
                 "status": "0"
               }, {
                 "time": "2017-11-20",
-                "status": "0"
+                "status": 1
               }, {
                 "time": "2017-11-21",
-                "status": "0"
+                "status": 1
               }, {
                 "time": "2017-11-22",
                 "status": "0"
@@ -662,183 +666,9 @@
                 "time": "2017-11-25",
                 "status": "0"
               }],
-              "chang_data": ["hh,2017-11-14,未签到 改 未签到+已签到", "李炜强,2017-11-11,未签到+已签到 改 已签到", "陈俊升,2017-11-08,未签到 改 未签到+陪产假", "黄秀,2017-10-28,未签到 改 休息", "黄秀,2017-11-04,已签到+早退 改 陪产假+工伤"],
+              "chang_data": [],
               "base_state": ["未签到", "已签到", "早退", "已签退", "休息", "补休", "事假", "病假", "旷工", "年假", "婚假", "产假", "陪产假", "工伤", "丧假"],
               "list": [{
-                "name": "陈俊文店",
-                "storeuser": 0,
-                "detail": [
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [], {
-                    "id": "148",
-                    "msg": ["未签到"],
-                    "type": 0,
-                    "canedit": 1
-                  }, {
-                    "id": "158",
-                    "msg": ["已签退"],
-                    "type": 0,
-                    "canedit": 1
-                  }, {
-                    "id": "174",
-                    "msg": ["病假", "旷工"],
-                    "type": 0,
-                    "canedit": 1
-                  }, {
-                    "id": "188",
-                    "msg": ["未签到"],
-                    "type": 0,
-                    "canedit": 1
-                  }, [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  []
-                ]
-              }, {
-                "name": "黄秀",
-                "storeuser": 0,
-                "detail": [{
-                  "id": "69",
-                  "msg": ["未签到"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "71",
-                  "msg": ["未签到"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "73",
-                  "msg": ["未签到"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "75",
-                  "msg": ["未签到"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "77",
-                  "msg": ["未签到"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "79",
-                  "msg": ["未签到"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "81",
-                  "msg": ["未签到"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "83",
-                  "msg": ["未签到"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "85",
-                  "msg": ["未签到"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "86",
-                  "msg": ["已签到", "早退"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "88",
-                  "msg": ["未签到"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "91",
-                  "msg": ["未签到"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "97",
-                  "msg": ["未签到"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "105",
-                  "msg": ["未签到"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "114",
-                  "msg": ["已签退"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "122",
-                  "msg": ["未签到", "已签到"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "131",
-                  "msg": ["未签到"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "140",
-                  "msg": ["未签到"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "149",
-                  "msg": ["未签到"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "159",
-                  "msg": ["未签到"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "175",
-                  "msg": ["未签到"],
-                  "type": 0,
-                  "canedit": 1
-                }, {
-                  "id": "189",
-                  "msg": ["已签到", "年假"],
-                  "type": 0,
-                  "canedit": 1
-                }, [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  []
-                ]
-              }, {
                 "name": "江颖",
                 "storeuser": 0,
                 "detail": [
@@ -866,15 +696,51 @@
                     "id": "190",
                     "msg": ["未签到", "已签退"],
                     "type": 0,
-                    "canedit": 0
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "204",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "245",
+                    "msg": ["未签到", "已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "278",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "323",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "353",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "386",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "415",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
                   }, [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
                   []
                 ]
               }, {
@@ -890,65 +756,75 @@
                   [],
                   [],
                   [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
                   [], {
-                    "id": "89",
-                    "msg": ["未签到"],
-                    "type": 0,
-                    "canedit": 1
-                  }, {
-                    "id": "92",
-                    "msg": ["未签到"],
-                    "type": 0,
-                    "canedit": 1
-                  }, {
-                    "id": "98",
-                    "msg": ["未签到"],
-                    "type": 0,
-                    "canedit": 1
-                  }, {
-                    "id": "106",
-                    "msg": ["未签到"],
-                    "type": 0,
-                    "canedit": 1
-                  }, [],
-                  [], {
-                    "id": "132",
-                    "msg": ["未签到", "已签到"],
-                    "type": 0,
-                    "canedit": 1
-                  }, {
-                    "id": "141",
-                    "msg": ["未签到", "已签退"],
-                    "type": 0,
-                    "canedit": 1
-                  }, {
                     "id": "150",
                     "msg": ["未签到"],
                     "type": 0,
+                    "status": "0",
                     "canedit": 1
                   }, {
                     "id": "160",
                     "msg": ["未签到"],
                     "type": 0,
+                    "status": 1,
                     "canedit": 1
                   }, {
                     "id": "176",
                     "msg": ["未签到", "补休"],
                     "type": 0,
+                    "status": 1,
                     "canedit": 1
                   }, {
                     "id": "191",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, [], {
+                    "id": "273",
                     "msg": ["未签到"],
                     "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "279",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "343",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "373",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "387",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "416",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": "0",
                     "canedit": 1
                   }, [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
                   []
                 ]
               }, {
@@ -970,88 +846,23 @@
                   [],
                   [],
                   [],
+                  [],
+                  [],
                   [], {
-                    "id": "133",
-                    "msg": ["未签到"],
-                    "type": 0,
-                    "canedit": 0
-                  }, {
-                    "id": "142",
-                    "msg": ["未签到"],
-                    "type": 0,
-                    "canedit": 0
-                  }, {
                     "id": "151",
                     "msg": ["未签到"],
                     "type": 0,
+                    "status": "0",
                     "canedit": 0
                   }, {
                     "id": "161",
                     "msg": ["未签到"],
                     "type": 0,
+                    "status": 1,
                     "canedit": 0
                   }, [],
                   [],
                   [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  []
-                ]
-              }, {
-                "name": "陈某人1",
-                "storeuser": 0,
-                "detail": [
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [], {
-                    "id": "134",
-                    "msg": ["未签到"],
-                    "type": 0,
-                    "canedit": 0
-                  }, {
-                    "id": "143",
-                    "msg": ["未签到"],
-                    "type": 0,
-                    "canedit": 0
-                  }, {
-                    "id": "152",
-                    "msg": ["未签到"],
-                    "type": 0,
-                    "canedit": 0
-                  }, {
-                    "id": "162",
-                    "msg": ["未签到"],
-                    "type": 0,
-                    "canedit": 0
-                  }, {
-                    "id": "177",
-                    "msg": ["未签到"],
-                    "type": 0,
-                    "canedit": 0
-                  }, {
-                    "id": "192",
-                    "msg": ["未签到"],
-                    "type": 0,
-                    "canedit": 0
-                  }, [],
                   [],
                   [],
                   [],
@@ -1073,79 +884,82 @@
                   [],
                   [],
                   [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
                   [], {
-                    "id": "87",
-                    "msg": ["未签到"],
-                    "type": 0,
-                    "canedit": 1
-                  }, {
-                    "id": "90",
-                    "msg": ["未签到"],
-                    "type": 0,
-                    "canedit": 1
-                  }, {
-                    "id": "95",
-                    "msg": ["未签到"],
-                    "type": 1,
-                    "canedit": 1
-                  }, {
-                    "id": "101",
-                    "msg": ["未签到"],
-                    "type": 1,
-                    "canedit": 1
-                  }, {
-                    "id": "109",
-                    "msg": ["未签到"],
-                    "type": 1,
-                    "canedit": 1
-                  }, {
-                    "id": "117",
-                    "msg": ["未签到"],
-                    "type": 1,
-                    "canedit": 1
-                  }, {
-                    "id": "126",
-                    "msg": ["未签到"],
-                    "type": 1,
-                    "canedit": 1
-                  }, {
-                    "id": "135",
-                    "msg": ["未签到"],
-                    "type": 0,
-                    "canedit": 1
-                  }, {
-                    "id": "144",
-                    "msg": ["未签到"],
-                    "type": 0,
-                    "canedit": 1
-                  }, {
                     "id": "153",
                     "msg": ["未签到"],
                     "type": 0,
-                    "canedit": 1
+                    "status": "0",
+                    "canedit": 0
                   }, {
                     "id": "163",
                     "msg": ["未签到"],
                     "type": 0,
-                    "canedit": 1
+                    "status": 1,
+                    "canedit": 0
                   }, {
                     "id": "178",
                     "msg": ["休息", "补休"],
                     "type": 0,
-                    "canedit": 1
+                    "status": 1,
+                    "canedit": 0
                   }, {
                     "id": "193",
-                    "msg": ["未签到", "产假"],
+                    "msg": ["事假", "年假"],
                     "type": 0,
-                    "canedit": 1
+                    "status": "0",
+                    "canedit": 0
+                  }, {
+                    "id": "205",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 0
+                  }, {
+                    "id": "247",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 0
+                  }, {
+                    "id": "280",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 0
+                  }, {
+                    "id": "325",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 0
+                  }, {
+                    "id": "379",
+                    "msg": ["未签到"],
+                    "type": 1,
+                    "status": 1,
+                    "canedit": 0
+                  }, {
+                    "id": "380",
+                    "msg": ["未签到"],
+                    "type": 1,
+                    "status": "0",
+                    "canedit": 0
+                  }, {
+                    "id": "409",
+                    "msg": ["未签到"],
+                    "type": 1,
+                    "status": "0",
+                    "canedit": 0
                   }, [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
                   []
                 ]
               }, {
@@ -1163,57 +977,85 @@
                   [],
                   [],
                   [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
                   [], {
-                    "id": "104",
-                    "msg": ["未签到"],
-                    "type": 1,
-                    "canedit": 1
-                  }, {
-                    "id": "112",
-                    "msg": ["未签到"],
-                    "type": 1,
-                    "canedit": 1
-                  }, {
-                    "id": "120",
-                    "msg": ["未签到"],
-                    "type": 1,
-                    "canedit": 1
-                  }, {
-                    "id": "129",
-                    "msg": ["未签到"],
-                    "type": 1,
-                    "canedit": 1
-                  }, {
-                    "id": "136",
-                    "msg": ["未签到"],
-                    "type": 0,
-                    "canedit": 1
-                  }, {
-                    "id": "145",
-                    "msg": ["未签到"],
-                    "type": 0,
-                    "canedit": 1
-                  }, {
                     "id": "154",
                     "msg": ["未签到"],
                     "type": 0,
+                    "status": "0",
                     "canedit": 1
                   }, {
                     "id": "164",
                     "msg": ["已签到"],
                     "type": 0,
+                    "status": 1,
                     "canedit": 1
                   }, {
                     "id": "179",
-                    "msg": ["旷工", "婚假"],
+                    "msg": ["旷工", "产假"],
                     "type": 0,
+                    "status": 1,
                     "canedit": 1
                   }, {
                     "id": "194",
                     "msg": ["未签到"],
                     "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "206",
+                    "msg": ["未签到", "已签退"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "248",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "281",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "326",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "356",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "388",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "417",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
                     "canedit": 1
                   }, [],
+                  []
+                ]
+              }, {
+                "name": "陈俊文",
+                "storeuser": 0,
+                "detail": [
                   [],
                   [],
                   [],
@@ -1221,6 +1063,72 @@
                   [],
                   [],
                   [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [], {
+                    "id": "155",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "165",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "180",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, [],
+                  [], {
+                    "id": "271",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "282",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "327",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "357",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "389",
+                    "msg": ["未签到", "休息"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "418",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, [],
                   []
                 ]
               }, {
@@ -1249,25 +1157,63 @@
                     "id": "166",
                     "msg": ["未签到", "已签到"],
                     "type": 0,
+                    "status": 1,
                     "canedit": 1
                   }, {
                     "id": "181",
                     "msg": ["未签到"],
                     "type": 0,
+                    "status": 1,
                     "canedit": 1
                   }, {
                     "id": "195",
                     "msg": ["未签到"],
                     "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "207",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "250",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "283",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "328",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "358",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "390",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "419",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
                     "canedit": 1
                   }, [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
                   []
                 ]
               }, {
@@ -1296,25 +1242,63 @@
                     "id": "167",
                     "msg": ["未签到"],
                     "type": 0,
+                    "status": 1,
                     "canedit": 1
                   }, {
                     "id": "182",
                     "msg": ["未签到"],
                     "type": 0,
+                    "status": 1,
                     "canedit": 1
                   }, {
                     "id": "196",
                     "msg": ["未签到"],
                     "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "208",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "251",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "284",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "329",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "359",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "391",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "420",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
                     "canedit": 1
                   }, [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
                   []
                 ]
               }, {
@@ -1343,25 +1327,63 @@
                     "id": "168",
                     "msg": ["未签到"],
                     "type": 0,
+                    "status": 1,
                     "canedit": 1
                   }, {
                     "id": "183",
                     "msg": ["未签到"],
                     "type": 0,
+                    "status": 1,
                     "canedit": 1
                   }, {
                     "id": "197",
                     "msg": ["未签到"],
                     "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "209",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "252",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "285",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "330",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "360",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "392",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "421",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
                     "canedit": 1
                   }, [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
                   []
                 ]
               }, {
@@ -1390,72 +1412,63 @@
                     "id": "169",
                     "msg": ["已签到"],
                     "type": 0,
+                    "status": 1,
                     "canedit": 1
                   }, {
                     "id": "184",
                     "msg": ["已签退"],
                     "type": 0,
+                    "status": 1,
                     "canedit": 1
                   }, {
                     "id": "198",
-                    "msg": ["未签到"],
+                    "msg": ["已签到"],
                     "type": 0,
-                    "canedit": 1
-                  }, [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  []
-                ]
-              }, {
-                "name": "hsjsj",
-                "storeuser": 0,
-                "detail": [
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [], {
-                    "id": "170",
-                    "msg": ["未签到"],
-                    "type": 0,
+                    "status": "0",
                     "canedit": 1
                   }, {
-                    "id": "185",
-                    "msg": ["已签退", "产假"],
+                    "id": "210",
+                    "msg": ["已签到"],
                     "type": 0,
+                    "status": "0",
                     "canedit": 1
                   }, {
-                    "id": "199",
+                    "id": "253",
                     "msg": ["未签到"],
                     "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "286",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "331",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "361",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "393",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "422",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
                     "canedit": 1
                   }, [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
                   []
                 ]
               }, {
@@ -1484,18 +1497,69 @@
                     "id": "171",
                     "msg": ["未签到"],
                     "type": 0,
+                    "status": 1,
                     "canedit": 1
                   }, {
                     "id": "186",
                     "msg": ["未签到"],
                     "type": 0,
+                    "status": 1,
                     "canedit": 1
                   }, {
                     "id": "200",
                     "msg": ["事假"],
                     "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "211",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "254",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "287",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "332",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "362",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "394",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "423",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
                     "canedit": 1
                   }, [],
+                  []
+                ]
+              }, {
+                "name": "刘珍云",
+                "storeuser": 0,
+                "detail": [
                   [],
                   [],
                   [],
@@ -1503,6 +1567,58 @@
                   [],
                   [],
                   [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [], {
+                    "id": "255",
+                    "msg": ["补休"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "309",
+                    "msg": ["已签到", "补休"],
+                    "type": 1,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "315",
+                    "msg": ["未签到"],
+                    "type": 1,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "376",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "395",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "424",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, [],
                   []
                 ]
               }, {
@@ -1530,15 +1646,49 @@
                   [],
                   [],
                   [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
+                  [], {
+                    "id": "212",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "256",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "289",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "333",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "363",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "396",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "425",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, [],
                   []
                 ]
               }, {
@@ -1566,19 +1716,53 @@
                   [],
                   [],
                   [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
+                  [], {
+                    "id": "213",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "257",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "290",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "334",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "364",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "397",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "426",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, [],
                   []
                 ]
               }, {
-                "name": "付丹伟",
+                "name": "小三",
                 "storeuser": 0,
                 "detail": [
                   [],
@@ -1595,42 +1779,267 @@
                   [],
                   [],
                   [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
                   [], {
-                    "id": "123",
+                    "id": "214",
                     "msg": ["未签到"],
                     "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "258",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "291",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "335",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "365",
+                    "msg": ["病假", "婚假"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "398",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "427",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, [],
+                  []
+                ]
+              }, {
+                "name": "李炜强",
+                "storeuser": 0,
+                "detail": [
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [], {
+                    "id": "216",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "260",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "293",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "337",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "366",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "399",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "428",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, [],
+                  []
+                ]
+              }, {
+                "name": "珍云test",
+                "storeuser": 0,
+                "detail": [
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [], {
+                    "id": "217",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "261",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "294",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "338",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "367",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "400",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "429",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, [],
+                  []
+                ]
+              }, {
+                "name": "友高",
+                "storeuser": 0,
+                "detail": [
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [], {
+                    "id": "262",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
                     "canedit": 0
                   }, {
-                    "id": "138",
+                    "id": "295",
                     "msg": ["未签到"],
-                    "type": 1,
+                    "type": 0,
+                    "status": "0",
                     "canedit": 0
                   }, {
-                    "id": "147",
+                    "id": "339",
                     "msg": ["未签到"],
-                    "type": 1,
+                    "type": 0,
+                    "status": 1,
                     "canedit": 0
                   }, {
-                    "id": "157",
-                    "msg": ["未签到"],
-                    "type": 1,
+                    "id": "368",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
                     "canedit": 0
                   }, {
-                    "id": "173",
+                    "id": "401",
                     "msg": ["未签到"],
-                    "type": 1,
+                    "type": 0,
+                    "status": "0",
                     "canedit": 0
                   }, {
-                    "id": "187",
+                    "id": "430",
                     "msg": ["未签到"],
-                    "type": 1,
-                    "canedit": 0
-                  }, {
-                    "id": "201",
-                    "msg": ["未签到"],
-                    "type": 1,
+                    "type": 0,
+                    "status": "0",
                     "canedit": 0
                   }, [],
+                  []
+                ]
+              }, {
+                "name": "大雄",
+                "storeuser": 0,
+                "detail": [
                   [],
                   [],
                   [],
@@ -1638,6 +2047,278 @@
                   [],
                   [],
                   [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [], {
+                    "id": "263",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 0
+                  }, {
+                    "id": "296",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 0
+                  }, {
+                    "id": "340",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 0
+                  }, {
+                    "id": "369",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 0
+                  }, {
+                    "id": "402",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 0
+                  }, {
+                    "id": "431",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 0
+                  }, [],
+                  []
+                ]
+              }, {
+                "name": "陈俊文18",
+                "storeuser": 0,
+                "detail": [
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [], {
+                    "id": "272",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "313",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "341",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "374",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "408",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "437",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, [],
+                  []
+                ]
+              }, {
+                "name": "煤泥",
+                "storeuser": 0,
+                "detail": [
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [], {
+                    "id": "344",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "371",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "404",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "433",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, [],
+                  []
+                ]
+              }, {
+                "name": "jhj",
+                "storeuser": 0,
+                "detail": [
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [], {
+                    "id": "375",
+                    "msg": ["已签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "405",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "434",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, [],
+                  []
+                ]
+              }, {
+                "name": "卓荣",
+                "storeuser": 0,
+                "detail": [
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [], {
+                    "id": "377",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": 1,
+                    "canedit": 1
+                  }, {
+                    "id": "406",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, {
+                    "id": "435",
+                    "msg": ["未签到"],
+                    "type": 0,
+                    "status": "0",
+                    "canedit": 1
+                  }, [],
                   []
                 ]
               }, {
@@ -1661,35 +2342,35 @@
                   [],
                   [],
                   [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
+                  [],
                   [], {
-                    "id": "155",
+                    "id": "407",
                     "msg": ["未签到"],
                     "type": 0,
-                    "canedit": 0
+                    "status": "0",
+                    "canedit": 1
                   }, {
-                    "id": "165",
-                    "msg": ["已签到"],
-                    "type": 0,
-                    "canedit": 0
-                  }, {
-                    "id": "180",
+                    "id": "436",
                     "msg": ["未签到"],
                     "type": 0,
-                    "canedit": 0
+                    "status": "0",
+                    "canedit": 1
                   }, [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
                   []
                 ]
               }]
             }
           }*/
+
+          _this.code = res.code;
 
           if (res.code == 1) {
             this.loading = false;
@@ -1901,7 +2582,7 @@
 <style lang="less" scoped>
   #monthlyReport {
     height: 100%;
-    font-weight: 200;
+      /*font-weight: 200;*/
     .top {
       padding: 8px;
       display: flex;
@@ -2181,13 +2862,14 @@
 
   .contentC {
     width: 94px;
-    height: 45px;
+    height: 46px;
     border-right: 1px solid gainsboro;
     border-bottom: 1px solid gainsboro;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
+    box-sizing: border-box;
   }
 
   .maskT {

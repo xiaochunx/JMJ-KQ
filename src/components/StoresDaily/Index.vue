@@ -26,7 +26,9 @@
             <span v-if="item.type == 1" style="color: deepskyblue">{{item.state | FormatDate}}</span>
             <span v-if="item.type == 2" style="color: lightcoral">{{item.state | FormatDate}}</span>
             <span v-if="item.type == 3" style="">{{item.state | FormatDate}}</span>-->
-            <img v-if="item.canedit == 1" :src="'./static/storesDaily/edit.png'" width="15" height="15" style="margin-left: 5px">
+            <span>
+              <img v-if="item.canedit == 1" :src="'./static/storesDaily/edit.png'" width="15" height="15">
+            </span>
           </div>
         </div>
       </div>
@@ -92,7 +94,7 @@
         popupVisible: false,              // 控制蒙版的显隐
         popupSubmit: false,                // 提交弹窗
         msgTip: "",                        // 提示信息
-        pickerValue: "",
+        pickerValue: new Date().Format("yyyy-MM-dd"),
         pickerData: new Date().Format("yyyy-MM-dd"),
         index: 0,               // 记录当前被选中cell
         value: [],              // 记录当前被选中
@@ -484,9 +486,16 @@
       align-items: center;
       font-weight: 200;
       font-size: 14px;
-      img{
-        position: absolute;
-        right: 20px;
+      span:nth-child(1){
+        flex: 9;
+        text-align: center;
+      }
+      span:nth-child(2){
+        flex: 2;
+        line-height: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
       }
     }
 

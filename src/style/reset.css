@@ -154,3 +154,62 @@ textarea::-webkit-input-placeholder {
 .el-radio__inner:hover{
   border-color: gainsboro !important;
 }
+
+
+/**
+type 类型
+0 -> 黑色
+1 -> 红色
+2 -> 黄色
+3 -> 紫色
+4 -> 蓝色
+5 -> 绿色
+ */
+
+.black{
+  color: black;
+}
+
+.red{
+  color: coral;
+}
+
+.yellow{
+  color: lightgoldenrodyellow;
+}
+
+.plum{
+  color: plum;
+}
+
+.skyblue{
+  color: deepskyblue;
+}
+
+.greenyellow{
+  color: darkgreen;
+}
+
+/**
+status 类型
+0 -> 没确认 -> 红
+1 -> 楼面经理确认
+2 -> 厨师长确认
+3 -> 都确认了
+ */
+
+.bgOne{
+  background-color: #ed1204;
+}
+
+.bgTwo{
+  background-color: yellow;
+}
+
+.bgThree{
+  background-color: skyblue;
+}
+
+.bgFour{
+  background-color: white;
+}

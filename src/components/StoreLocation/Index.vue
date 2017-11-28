@@ -64,8 +64,8 @@
         store_info: {
           areaid: "8",
           name: "广深市场",
-          longitude: 113.30764968,
-          latitude: 23.1200491
+          longitude: 0.0,
+          latitude: 0.0
         },
         signpackage: {}
       }
@@ -92,14 +92,30 @@
       },
       check() {
         var _this = this;
-        this.wx.openLocation({
-          latitude: _this.store_info.latitude, // 纬度，浮点数，范围为90 ~ -90
-          longitude: _this.store_info.longitude, // 经度，浮点数，范围为180 ~ -180。
-          name: 'xxx', // 位置名
-          address: 'xxxx.xxx', // 地址详情说明
-          scale: 20, // 地图缩放级别,整形值,范围从1~28。默认为最大
-          infoUrl: 'http://www.baidu.com' // 在查看位置界面底部显示的超链接,可点击跳转
+        _this.loading = true;
+
+        // 配置微信
+        _this.wx.config({
+          appId: _this.signpackage.appId,
+          nonceStr: _this.signpackage.nonceStr,
+          timestamp: _this.signpackage.timestamp,
+          signature: _this.signpackage.signature,
+          jsApiList: [
+            'openLocation', 'getLocation', 'checkJsApi'
+          ]
         });
+
+        _this.wx.ready(function () {
+          _this.loading = false;
+          _this.wx.openLocation({
+            latitude: _this.store_info.latitude, // 纬度，浮点数，范围为90 ~ -90
+            longitude: _this.store_info.longitude, // 经度，浮点数，范围为180 ~ -180。
+            name: '我的位置', // 位置名
+            address: '', // 地址详情说明
+            scale: 20, // 地图缩放级别,整形值,范围从1~28。默认为最大
+            infoUrl: 'http://www.baidu.com' // 在查看位置界面底部显示的超链接,可点击跳转
+          });
+        })
 
       },
       getCur(){
@@ -160,6 +176,7 @@
               var speed = res.speed; // 速度，以米/每秒计
               var accuracy = res.accuracy; // 位置精度
 
+
               _this.pupupMsg = "获取位置成功!";
 
               setTimeout(function () {
@@ -203,15 +220,27 @@
       }
     },
     mounted() {
-
-      this.loading = true;
       var _this = this;
+      _this.loading = true;
+
       requestStoresInitialize().then((res) => {
-        this.loading = false;
+
         if (res.code == 1) {
+
+          // 测试地理位置
+          /*res.data.store_info.longitude = 113.3293000000000;
+          res.data.store_info.latitude = 23.13878059387207;*/
+          //
+
+
+          /*res.data.store_info.longitude = res.data.store_info.longitude.toFixed(14);
+          res.data.store_info.latitude = res.data.store_info.latitude.toFixed(14);*/
+
 
           _this.store_info = res.data.store_info;
           _this.signpackage = res.data.signpackage;
+
+          _this.loading = false;
 
           /*var appId = res.data.signpackage.appId;
           var nonceStr = res.data.signpackage.nonceStr;
@@ -232,6 +261,11 @@
             jsApiList: jsApiList
           });
 
+          _this.wx.ready(function () {
+            _this.loading = false;
+          })*/
+
+          /*
           // config成功之后会调用这个方法
           _this.wx.ready(function () {
             _this.wx.getLocation({
