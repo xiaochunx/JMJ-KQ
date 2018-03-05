@@ -3,7 +3,6 @@
     <mt-index-list :show-indicator="false">
       <mt-index-section index=" " v-for="(item,count) in list" :key="count">
         <mt-cell v-for="(value,index) in item" :title="value.name" is-link :to="value.url" :key="index">
-          <!--<img slot="icon" :src="'./static/repertoire/' + value.src" width="24" height="24" style="margin-right: 20px">-->
           <img slot="icon" :src="value.src" width="24" height="24" style="margin-right: 20px">
         </mt-cell>
       </mt-index-section>
@@ -34,8 +33,10 @@
         msgTip: "",
         tipMsg: "正在加载中...",
         code: null,
-        list: [
-          /*[
+        list: [],
+        /*
+        [
+          [
             {
               name: "邀请员工",
               url: "/InviteEmployees",
@@ -83,8 +84,9 @@
               url: "/ModifyLog",
               src: "./static/repertoire/ModifyLog.png"
             }
-          ]*/
-        ],
+          ]
+        ]
+        */
       }
     },
     components: {},
@@ -109,9 +111,7 @@
           _this.list = res.data;
         } else {
           _this.tipMsg = res.msg;
-
           _this.popupSubmit = true;
-
         }
       })
         .catch((error) => {

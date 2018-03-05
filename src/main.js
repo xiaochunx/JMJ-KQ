@@ -23,7 +23,7 @@ Vue.prototype.$http = Axios;
 Axios.defaults.withCredentials = true;
 
 
-
+// FastClick
 if ('addEventListener' in document) {
   document.addEventListener('DOMContentLoaded', function() {
     FastClick.attach(document.body);
@@ -39,7 +39,8 @@ Vue.use(require('vue-wechat-title'));
 
 Vue.use(MintUI);
 
-Vue.config.productionTip = false
+// 去除生成环境tip
+Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
 new Vue({

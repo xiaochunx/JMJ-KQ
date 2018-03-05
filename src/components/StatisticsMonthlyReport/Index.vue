@@ -3,15 +3,22 @@
 
     <div class="top">
       <div class="topBtn" @click="openPicker">
-        <img :src="'./static/storesDaily/data.png'" width="24" height="24" style="margin-right: 20px">
-        <span>{{pickerData}}</span>
+        <img :src="'./static/storesDaily/data.png'" width="24" height="24" style="margin-right: 5px">
+        <span style="text-align: center;">{{pickerData}}</span>
         <span>
           <img :src="'./static/storesDaily/xiala.png'" alt="" style="width: 14px;height: 10px">
         </span>
       </div>
       <div class="topBtn" style="margin-left: 10px" @click="openPopup">
-        <img :src="'./static/storesDaily/dian.png'" width="24" height="24" style="margin-right: 20px">
+        <img :src="'./static/storesDaily/dian.png'" width="24" height="24" style="margin-right: 5px">
         <span :class="{'smallSize' : storesName.length > 5}">{{storesName}}</span>
+        <span>
+          <img :src="'./static/storesDaily/xiala.png'" alt="" style="width: 14px;height: 10px">
+        </span>
+      </div>
+      <div class="topBtn" style="margin-left: 10px" @click="openPopup2">
+        <img :src="'./static/storesDaily/dian.png'" width="24" height="24" style="margin-right: 5px">
+        <span :class="{'smallSize' : roletype.length > 5}" style="text-align: center;">{{roletype}}</span>
         <span>
           <img :src="'./static/storesDaily/xiala.png'" alt="" style="width: 14px;height: 10px">
         </span>
@@ -41,7 +48,7 @@
 
         <div id="body">
           <div class="left">
-            <p v-for="(item,index) in list" :class="{'storeUser' : item.storeuser == 1}">
+            <p v-for="(item,index) in list" :class="{'storeUser' : item.storeuser == 0}">
               {{item.name}}
             </p>
           </div>
@@ -81,6 +88,16 @@
       <mt-picker :slots="slots" @change="onValuesChange"></mt-picker>
     </mt-popup>
 
+    <mt-popup
+      v-model="popupVisible2"
+      position="bottom">
+      <div class="popupTittle">
+        <span class="cell" @click="operation">取消</span>
+        <span class="cell" @click="operation(3)">确定</span>
+      </div>
+      <mt-picker :slots="slots2" @change="getSlotValue"></mt-picker>
+    </mt-popup>
+
     <mt-datetime-picker
       ref="picker"
       type="date"
@@ -107,71 +124,51 @@
       </mt-popup>
     </div>
 
-
-    <div class="tipLoading">
-
-      <mt-popup
-        v-model="loading"
-        :closeOnClickModal="false"
-      >
-        <div class="loading">
-          <mt-spinner type="fading-circle" class="isLoading"></mt-spinner>
-        </div>
-      </mt-popup>
-    </div>
   </div>
 </template>
 <script>
-  import { monthlyReport, monthlyRportDetail } from '../../api/api.js'
+  import {monthlyReport, monthlyRportDetail} from '../../api/api.js'
   import utils from '@/utils/common.js'
 
   import Vue from 'vue'
 
-  //过滤器
-  Vue.filter('FormatDate', function (item) {
-    var str = "";
-    for (var value in item) {
-      str = item[value] + '+' + str;
-    }
-
-    str = str.substring(0, str.lastIndexOf('+'));
-    return str;
-  });
-
   export default {
     data() {
       return {
-        loading: false,
         popupVisible: false,
+        popupVisible2: false,
         popupSubmit: false,
         storesNameIn: "",
         pickerValue: new Date().Format("yyyy-MM-dd"),
         msgTip: "",
         pickerData: new Date().Format("yyyy-MM"),
-        list: [
-          {
-            name: "程俊文",
-            detail: [],
-          },
-        ],
+        list: [],
         rowList: [],
-        flag: false,          // 是否点击切换按钮
+        flag: false,                  // 是否点击切换按钮
         endDate: new Date(),
-        storesName: "",                     // 门店名称
+        storesName: "",               // 门店名称
+        roletype: '前厅',
+        roletypeInstance: '',
         slots: [
           {
             flex: 1,
-            values: ['天河北店', '2015-02', '2015-03', '2015-04', '2015-05', '2015-06'],
+            values: [],
             className: 'slot1',
             textAlign: 'center'
           }],
-        code: null          // 记录初始code值
+        slots2: [
+          {
+            flex: 1,
+            values: ['前厅', '后厨'],
+            textAlign: 'center',
+            defaultIndex: 2
+          }],
+        code: null                    // 记录初始code值
       }
     },
     methods: {
       sureBtn() {
         if (this.code == -1 || this.code == 3 || this.code == 4) {
-          /*this.$router.push('/');*/
           this.wx.closeWindow();
         }
         this.popupSubmit = false;
@@ -190,8 +187,8 @@
         alert(1);
         utils.closePg();
       },
-      openPicker() {
-        this.$refs.picker.open();
+      getSlotValue(index) {
+        this.roletypeInstance = index.values[0];
       },
       handleConfirm() {
         this.pickerData = new Date(this.pickerValue).Format("yyyy-MM");
@@ -239,398 +236,56 @@
           this.storesNameIn = values[0];
         }
       },
+      openPicker() {
+        this.$refs.picker.open();
+      },
       openPopup() {
         this.popupVisible = true;
       },
+      openPopup2() {
+        this.popupVisible2 = true;
+      },
       operation(value) {
         // 取消
-        if (value == 1) {
+        if (value == 3) {
+          this.roletype = this.roletypeInstance;
 
+          this.apiTwo();
+          this.flag = false;
         }
         // 确认
         else if (value == 2) {
-          if (this.storesNameIn != '') {
-            this.storesName = this.storesNameIn;
+          this.storesName = this.storesNameIn;
 
-            // 在这里发送网络请求
-            this.apiTwo();
-            this.flag = false;
-          }
+          // 在这里发送网络请求
+          this.apiTwo();
+          this.flag = false;
         }
 
         // 退出蒙版
         this.popupVisible = false;
-      },
+        this.popupVisible2 = false;
 
+      },
       // 统计月报-考情明细
       apiOne() {
 
+
         var _this = this;
+        var roletype = this.roletype;
+
+        if (roletype == '前厅') {
+          roletype = 50;
+        } else if (roletype == '后厨') {
+          roletype = 60;
+        }
+
         var params = {
           month: _this.pickerData,
-          store: _this.storesName
+          store: _this.storesName,
+          roletype: roletype
         };
         monthlyRportDetail(params).then((res) => {
-
-          /*res = {
-            "code": "1",
-            "msg": "",
-            "data": {
-              "stores": ["天河3店", "天河2店"],
-              "makesure": [{
-                "time": "2017-10-25",
-                "status": "0"
-              }, {
-                "time": "2017-10-26",
-                "status": "0"
-              }, {
-                "time": "2017-10-27",
-                "status": "0"
-              }, {
-                "time": "2017-10-28",
-                "status": "0"
-              }, {
-                "time": "2017-10-29",
-                "status": "0"
-              }, {
-                "time": "2017-10-30",
-                "status": "0"
-              }, {
-                "time": "2017-10-31",
-                "status": "0"
-              }, {
-                "time": "2017-11-01",
-                "status": "0"
-              }, {
-                "time": "2017-11-02",
-                "status": "0"
-              }, {
-                "time": "2017-11-03",
-                "status": "0"
-              }, {
-                "time": "2017-11-04",
-                "status": "0"
-              }, {
-                "time": "2017-11-05",
-                "status": "0"
-              }, {
-                "time": "2017-11-06",
-                "status": "0"
-              }, {
-                "time": "2017-11-07",
-                "status": "0"
-              }, {
-                "time": "2017-11-08",
-                "status": "2"
-              }, {
-                "time": "2017-11-09",
-                "status": "0"
-              }, {
-                "time": "2017-11-10",
-                "status": "0"
-              }, {
-                "time": "2017-11-11",
-                "status": "0"
-              }, {
-                "time": "2017-11-12",
-                "status": "0"
-              }, {
-                "time": "2017-11-13",
-                "status": "0"
-              }, {
-                "time": "2017-11-14",
-                "status": "0"
-              }, {
-                "time": "2017-11-15",
-                "status": "0"
-              }, {
-                "time": "2017-11-16",
-                "status": "0"
-              }, {
-                "time": "2017-11-17",
-                "status": "0"
-              }, {
-                "time": "2017-11-18",
-                "status": "0"
-              }, {
-                "time": "2017-11-19",
-                "status": "0"
-              }, {
-                "time": "2017-11-20",
-                "status": "0"
-              }, {
-                "time": "2017-11-21",
-                "status": "0"
-              }, {
-                "time": "2017-11-22",
-                "status": "0"
-              }, {
-                "time": "2017-11-23",
-                "status": "0"
-              }, {
-                "time": "2017-11-24",
-                "status": "0"
-              }, {
-                "time": "2017-11-25",
-                "status": "0"
-              }, {
-                "time": "2017-11-26",
-                "status": "0"
-              }],
-              "list": [{
-                "name": "陈俊文",
-                "storeuser": 0,
-                "detail": [{
-                  "msg": ["未签到"],
-                  "type": 0
-                }, {
-                  "msg": ["未签到"],
-                  "type": 0
-                }, [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [], {
-                    "msg": ["未签到"],
-                    "type": 0
-                  }, {
-                    "msg": ["未签到"],
-                    "type": 0
-                  }, [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  []
-                ]
-              }, {
-                "name": "黄秀",
-                "storeuser": 0,
-                "detail": [{
-                  "msg": ["未签到"],
-                  "type": 0
-                }, {
-                  "msg": ["未签到"],
-                  "type": 0
-                }, {
-                  "msg": ["未签到"],
-                  "type": 0
-                }, {
-                  "msg": ["未签到"],
-                  "type": 0
-                }, {
-                  "msg": ["未签到"],
-                  "type": 0
-                }, {
-                  "msg": ["未签到"],
-                  "type": 0
-                }, {
-                  "msg": ["未签到"],
-                  "type": 0
-                }, {
-                  "msg": ["未签到"],
-                  "type": 0
-                }, {
-                  "msg": ["未签到"],
-                  "type": 0
-                }, {
-                  "msg": ["未签到"],
-                  "type": 0
-                }, {
-                  "msg": ["已签到", "早退"],
-                  "type": 0
-                }, {
-                  "msg": ["未签到"],
-                  "type": 0
-                }, {
-                  "msg": ["未签到"],
-                  "type": 0
-                }, {
-                  "msg": ["未签到"],
-                  "type": 0
-                }, {
-                  "msg": ["未签到"],
-                  "type": 0
-                }, {
-                  "msg": ["已签退"],
-                  "type": 0
-                }, {
-                  "msg": ["未签到"],
-                  "type": 0
-                }, [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  []
-                ]
-              }, {
-                "name": "付丹伟",
-                "storeuser": 0,
-                "detail": [
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [], {
-                    "msg": ["未签到"],
-                    "type": 0
-                  }, [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  []
-                ]
-              }, {
-                "name": "陈俊升",
-                "storeuser": 0,
-                "detail": [
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [], {
-                    "msg": ["未签到"],
-                    "type": 0
-                  }, {
-                    "msg": ["未签到"],
-                    "type": 0
-                  }, {
-                    "msg": ["未签到"],
-                    "type": 1
-                  }, {
-                    "msg": ["未签到"],
-                    "type": 1
-                  }, {
-                    "msg": ["未签到"],
-                    "type": 1
-                  }, {
-                    "msg": ["未签到"],
-                    "type": 1
-                  }, {
-                    "msg": ["未签到"],
-                    "type": 1
-                  }, [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  []
-                ]
-              }, {
-                "name": "李炜强",
-                "storeuser": 0,
-                "detail": [
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [], {
-                    "msg": ["未签到"],
-                    "type": 0
-                  }, {
-                    "msg": ["未签到"],
-                    "type": 0
-                  }, {
-                    "msg": ["未签到"],
-                    "type": 0
-                  }, {
-                    "msg": ["未签到"],
-                    "type": 0
-                  }, [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  [],
-                  []
-                ]
-              }]
-            }
-          }*/
-          this.loading = false;
           if (res.code == 1) {
             _this.rowList = res.data.makesure;
             _this.list = res.data.list;
@@ -652,34 +307,25 @@
       // 统计月报-初始化
       apiTwo() {
 
+        var roletype = this.roletype;
+
+        if (!this.roletype) {
+          roletype = 50;
+        } else if (roletype == '前厅') {
+          roletype = 50;
+        } else if (roletype == '后厨') {
+          roletype = 60;
+        }
+
         // 发送网络请求 ->
         var _this = this;
         var params = {
           month: _this.pickerData,
-          store: _this.storesName
+          store: _this.storesName,
+          roletype: roletype
         };
 
         monthlyReport(params).then((res) => {
-
-          /*res = {
-            "code": "1",
-            "msg": "",
-            "data": {
-              "stores": ["天河3店", "天河2店"],
-              "base_state": ["未签到", "已签到", "早退", "已签退", "休息", "补休", "事假", "病假", "旷工", "年假", "婚假", "产假", "陪产假", "工伤", "丧假"],
-              "list": [{
-                "name": "陈俊文",
-                "detail": [34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-              }, {
-                "name": "黄秀",
-                "detail": [34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-              }, {
-                "name": "总计",
-                "detail": [68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-              }]
-            }
-          }*/
-          this.loading = false;
           if (res.code == 1) {
             _this.list = res.data.list;
             _this.slots[0].values = res.data.stores;
@@ -704,39 +350,18 @@
         "event": ["scroll", "scroll"]
       });
 
-//      this.loading = true;
-
       // 发送网络请求 ->
       var _this = this;
       var params = {
         month: _this.pickerData,
-        store: _this.storesName
+        store: _this.storesName,
+        roletype: 50
       };
 
       monthlyReport(params).then((res) => {
-
         _this.code = res.code;
-        /*res = {
-          "code": "1",
-          "msg": "",
-          "data": {
-            "stores": ["天河3店", "天河2店"],
-            "base_state": ["未签到", "已签到", "早退", "已签退", "休息", "补休", "事假", "病假", "旷工", "年假", "婚假", "产假", "陪产假", "工伤", "丧假"],
-            "list": [{
-              "name": "陈俊文",
-              "detail": [34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            }, {
-              "name": "黄秀",
-              "detail": [34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            }, {
-              "name": "总计",
-              "detail": [68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            }]
-          }
-        }*/
 
         if (res.code == 1) {
-          this.loading = false;
           _this.list = res.data.list;
           _this.slots[0].values = res.data.stores;
           _this.rowList = res.data.base_state;
@@ -754,7 +379,7 @@
         }
       }).catch((err) => {
         console.log(err);
-      })
+      });
 
       // 移除日期
       setTimeout(function () {
@@ -784,7 +409,7 @@
         flex: 1;
         /*width: 100%;*/
         > img {
-          margin-left: 20px;
+          margin-left: 5px;
         }
         span:nth-child(2) {
           flex: 8;
@@ -901,7 +526,7 @@
     align-items: center;
   }
 
-  .box{
+  .box {
     height: 80%;
   }
 
@@ -919,7 +544,7 @@
   }
 
   #body {
-    height : calc(~"100% - 45px");
+    height: calc(~"100% - 45px");
     overflow-x: hidden;
   }
 
@@ -953,6 +578,8 @@
     height: 100%;
     box-sizing: border-box;
     line-height: 45px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    width: 100%;
   }
 
   #body .left p:last-of-type {
@@ -1071,22 +698,6 @@
           height: 42px;
           font-size: 16px;
         }
-      }
-    }
-  }
-
-  .tipLoading {
-    .mint-popup {
-      width: 100px;
-    }
-    .loading {
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      .isLoading {
-        margin-bottom: 10px;
       }
     }
   }

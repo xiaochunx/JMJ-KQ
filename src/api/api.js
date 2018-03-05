@@ -2,7 +2,7 @@ import axios from 'axios'
 import qs from 'qs'
 
 // 配置域名
-let base = 'http://kq.7kou.cn';
+let base = '';
 // 延迟时间
 let timeOut = {timeout: 1000 * 60};
 

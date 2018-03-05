@@ -3,7 +3,7 @@
     <div class="item">
       <span>授权人员: </span>
       <div @click="openPopup">{{authorizedMan}}</div>
-      <div>
+      <div @click="openPopup">
         <img :src="'./static/down.png'" alt="" style="width: 25px;height: 25px;">
       </div>
     </div>
@@ -11,7 +11,7 @@
     <div class="item">
       <span>开始日期: </span>
       <div @click="openPicker(1)">{{beginTime}}</div>
-      <div>
+      <div @click="openPicker(1)">
         <img :src="'./static/down.png'" alt="" style="width: 25px;height: 25px;">
       </div>
     </div>
@@ -19,7 +19,7 @@
     <div class="item">
       <span>结束日期: </span>
       <div @click="openPicker(2)">{{endTime}}</div>
-      <div>
+      <div @click="openPicker(2)">
         <img :src="'./static/down.png'" alt="" style="width: 25px;height: 25px;">
       </div>
     </div>
@@ -110,9 +110,7 @@
             _this.index = index;
           }
         });
-
         this.flag = 0;
-
         this.authorizedMan = values[0];
       },
       openPopup() {

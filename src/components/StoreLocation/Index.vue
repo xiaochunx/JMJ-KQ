@@ -1,13 +1,13 @@
 <template>
   <div v-wechat-title="$route.meta.title" id="storesDaily">
     <div class="top">
-      <div class="title">
+      <div class="title" @click="getCur">
         <img :src="'./static/storeLocation/weizhi.png'" alt="" style="width: 25px;height: 25px">
-        <span @click="getCur">获取位置</span>
+        <span>获取位置</span>
       </div>
-      <div class="title">
+      <div class="title" @click="check">
         <img :src="'./static/storeLocation/weizhi1.png'" alt="" style="width: 25px;height: 25px">
-        <span @click="check">查看位置</span>
+        <span>查看位置</span>
       </div>
     </div>
 
@@ -51,7 +51,7 @@
   </div>
 </template>
 <script>
-  import { requestStoresInitialize,storesLocationPostMsg } from '../../api/api.js'
+  import {requestStoresInitialize, storesLocationPostMsg} from '../../api/api.js'
 
   export default {
     data() {
@@ -118,37 +118,7 @@
         })
 
       },
-      getCur(){
-        /*this.loading = true;
-        this.pupupMsg = "加载数据中...";
-        var _this = this;
-
-        this.wx.getLocation({
-          type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-          success: function (res) {
-
-             _this.store_info.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-             _this.store_info.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-            var speed = res.speed; // 速度，以米/每秒计
-            var accuracy = res.accuracy; // 位置精度
-
-            _this.pupupMsg = "获取位置成功!";
-
-            setTimeout(function () {
-              _this.loading = false;
-            },500)
-          },
-          error(err){
-            _this.pupupMsg = "获取位置失败!";
-          },
-          fail(err){
-            alert('fail');
-          },
-          complete(){
-
-          }
-        });*/
-
+      getCur() {
         this.loading = true;
         var _this = this;
 
@@ -176,19 +146,17 @@
               var speed = res.speed; // 速度，以米/每秒计
               var accuracy = res.accuracy; // 位置精度
 
-
               _this.pupupMsg = "获取位置成功!";
 
               setTimeout(function () {
                 _this.loading = false;
-              },500)
+              }, 500)
             },
-            error(err){
+            error(err) {
               _this.pupupMsg = "获取位置失败!";
             }
           });
         });
-
 
         // 多次请求位置信息(4s一次)
         _this.timer = setInterval(function () {
@@ -209,123 +177,33 @@
 
                 setTimeout(function () {
                   _this.loading = false;
-                },500)
+                }, 500)
               },
-              error(err){
+              error(err) {
                 _this.pupupMsg = "获取位置失败!";
               }
             });
           });
-        },4000);
+        }, 4000);
       }
     },
     mounted() {
       var _this = this;
       _this.loading = true;
-
       requestStoresInitialize().then((res) => {
 
         if (res.code == 1) {
 
-          // 测试地理位置
-          /*res.data.store_info.longitude = 113.3293000000000;
-          res.data.store_info.latitude = 23.13878059387207;*/
-          //
-
-
-          /*res.data.store_info.longitude = res.data.store_info.longitude.toFixed(14);
-          res.data.store_info.latitude = res.data.store_info.latitude.toFixed(14);*/
-
-
           _this.store_info = res.data.store_info;
           _this.signpackage = res.data.signpackage;
-
           _this.loading = false;
 
-          /*var appId = res.data.signpackage.appId;
-          var nonceStr = res.data.signpackage.nonceStr;
-          var timestamp = res.data.signpackage.timestamp;
-          var signature = res.data.signpackage.signature;
-          var jsApiList = [
-            'openLocation', 'getLocation', 'checkJsApi'
-          ];
-
-          // alert('请求成功啦');
-
-          // 配置微信
-          _this.wx.config({
-            appId: appId,
-            nonceStr: nonceStr,
-            timestamp: timestamp,
-            signature: signature,
-            jsApiList: jsApiList
-          });
-
-          _this.wx.ready(function () {
-            _this.loading = false;
-          })*/
-
-          /*
-          // config成功之后会调用这个方法
-          _this.wx.ready(function () {
-            _this.wx.getLocation({
-              type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-              success: function (res) {
-
-                window.clearInterval(_this.timer);
-
-                _this.store_info.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-                _this.store_info.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-                var speed = res.speed; // 速度，以米/每秒计
-                var accuracy = res.accuracy; // 位置精度
-
-                _this.pupupMsg = "获取位置成功!";
-
-                setTimeout(function () {
-                  _this.loading = false;
-                },500)
-              },
-              error(err){
-                _this.pupupMsg = "获取位置失败!";
-              }
-            });
-          });
-
-
-          // 多次请求位置信息(4s一次)
-          _this.timer = setInterval(function () {
-            // config成功之后会调用这个方法
-            _this.wx.ready(function () {
-              _this.wx.getLocation({
-                type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-                success: function (res) {
-
-                  window.clearInterval(_this.timer);
-
-                  _this.store_info.latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
-                  _this.store_info.longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
-                  var speed = res.speed; // 速度，以米/每秒计
-                  var accuracy = res.accuracy; // 位置精度
-
-                  _this.pupupMsg = "获取位置成功!";
-
-                  setTimeout(function () {
-                    _this.loading = false;
-                  },500)
-                },
-                error(err){
-                  _this.pupupMsg = "获取位置失败!";
-                }
-              });
-            });
-          },4000);*/
-
-        }else {
+        } else {
           _this.pupupMsg = res.msg;
 
           setTimeout(function () {
             _this.loading = false;
-          },500)
+          }, 500)
         }
       }).catch((error) => {
         alert(error);

@@ -65,16 +65,6 @@
       </div>
     </mt-popup>
 
-    <div class="tipLoading">
-      <mt-popup
-        v-model="loading"
-        :closeOnClickModal="false"
-      >
-        <div class="loading">
-          <mt-spinner type="fading-circle" class="isLoading"></mt-spinner>
-        </div>
-      </mt-popup>
-    </div>
   </div>
 </template>
 <script>
@@ -84,66 +74,11 @@
   export default {
     data() {
       return {
-        loading: false,
         popupSubmit: false,
         popupSubmit2: false,
         msgTip: "",       // 提示文字
         name: "",         // 当前选中用户名
-        list: [
-          {
-            imgSrc: "./static/pfb_orderTab_collection_empty_76x53_@2x.png",
-            name: "李炜强",
-            id: 2,
-          },
-          {
-            imgSrc: "./static/bg_button_review_hl_15x25_@2x.png",
-            name: "僵硬",
-          },
-          {
-            imgSrc: "./static/bg_button_review_hl_15x25_@2x.png",
-            name: "李炜强",
-          },
-          {
-            imgSrc: "./static/bg_button_review_hl_15x25_@2x.png",
-            name: "李炜强",
-          },
-          {
-            imgSrc: "./static/bg_button_review_hl_15x25_@2x.png",
-            name: "李炜强",
-          },
-          {
-            imgSrc: "./static/bg_button_review_hl_15x25_@2x.png",
-            name: "李炜强",
-          },
-          {
-            imgSrc: "./static/bg_button_review_hl_15x25_@2x.png",
-            name: "李炜强",
-          },
-          {
-            imgSrc: "./static/bg_button_review_hl_15x25_@2x.png",
-            name: "李炜强",
-          },
-          {
-            imgSrc: "./static/bg_button_review_hl_15x25_@2x.png",
-            name: "李炜强",
-          },
-          {
-            imgSrc: "./static/bg_button_review_hl_15x25_@2x.png",
-            name: "李炜强",
-          },
-          {
-            imgSrc: "./static/bg_button_review_hl_15x25_@2x.png",
-            name: "李炜强",
-          },
-          {
-            imgSrc: "./static/bg_button_review_hl_15x25_@2x.png",
-            name: "李炜强",
-          },
-          {
-            imgSrc: "./static/bg_button_review_hl_15x25_@2x.png",
-            name: "李炜强",
-          },
-        ],
+        list: [],
         radio: '1',
         textarea: "",
         pickerValue: new Date().Format("yyyy-MM-dd"),
@@ -192,7 +127,6 @@
       },
       apiInitialize() {
 
-        this.loading = true;
         var _this = this;
         var params = {};
 
@@ -229,8 +163,6 @@
           }*/
           _this.code = res.code;
 
-          this.loading = false;
-
           if (res.code == 1) {
             _this.list = res.data
           }else {
@@ -243,7 +175,6 @@
         })
       },
       apiPost() {
-        this.loading = true;
         var _this = this;
         var params = {
           aid: _this.id,
@@ -252,7 +183,6 @@
         };
 
         firstInstanceSave(params).then((res) => {
-          _this.loading = false;
           _this.msgTip = res.msg;
           _this.popupSubmit = true;
 
@@ -272,22 +202,6 @@
     height: 100%;
     .content{
       height: 100%;
-    }
-  }
-
-  .tipLoading {
-    .mint-popup {
-      width: 100px;
-    }
-    .loading {
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      .isLoading {
-        margin-bottom: 10px;
-      }
     }
   }
 

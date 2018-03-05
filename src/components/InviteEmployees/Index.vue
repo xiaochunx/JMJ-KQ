@@ -31,18 +31,9 @@
 
     <div class="footer">
       <div class="footerBtn">
-        <mt-button @click="changeRouter">录入前厅店员</mt-button>
+        <mt-button @click="changeRouter">{{button}}</mt-button>
       </div>
     </div>
-
-    <mt-popup
-      v-model="loading"
-    >
-      <div class="loading">
-        <mt-spinner type="fading-circle" class="isLoading"></mt-spinner>
-        <div>加载数据中...</div>
-      </div>
-    </mt-popup>
 
   </div>
 </template>
@@ -52,30 +43,11 @@
   export default {
     data() {
       return {
-        loading: false,
         imgSrc: "",
-        title: "天河店-前厅",
+        title: "",
         goUrl: "",
-        data: {
-          "code": "1",
-          "msg": "",
-          "data": {
-            "store_info": {
-              "areaid": "3",
-              "name": "青口测试门店1",
-              "longitude": "113.329470",
-              "latitude": "23.138594"
-            },
-            "signpackage": {
-              "appId": "wx9fad84f36b3a2463",
-              "nonceStr": "ksijuzi4SWgLDRsf",
-              "timestamp": 1510814347,
-              "url": "http:\/\/kq.7kou.cn\/kqhtml\/index.html",
-              "signature": "17ddf104904d97ccc8244def6e8def94c0a6cd7e",
-              "rawString": "jsapi_ticket=52Tw1_qSfGvjmabRE6VHqcXS02tIVfw4yUxK9UaA8K9Uh7hsd7DQjvjQfraLLAXgIpbC8AYt5xzDeaNLuBOwhg&noncestr=ksijuzi4SWgLDRsf&timestamp=1510814347&url=http:\/\/kq.7kou.cn\/kqhtml\/index.html"
-            }
-          }
-        }
+        button: "",
+        data: {}
       }
     },
     methods: {
@@ -93,6 +65,7 @@
           this.imgSrc = res.data.imgSrc;
           this.title = res.data.title;
           this.goUrl = res.data.gourl;
+          this.button = res.data.button;
         }
       }).catch((error) => {
         console.log(error);

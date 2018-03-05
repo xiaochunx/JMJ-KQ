@@ -19,13 +19,14 @@
 
       <div style="overflow-y: scroll;height: 90%;">
         <div class="middleMsg" v-for="(item,index) in list" :key="index">
-          <div class="titleName" :class="{'storeUser' : item.storeuser == 1}">{{item.name}}</div>
+          <div class="titleName" :class="{'storeUser' : item.storeuser == 0}">{{item.name}}</div>
           <div class="titleMsg" @click="item.canedit == 1 && open(index)">
-            <span>{{item.state | FormatDate}}</span>
-            <!--<span v-if="item.type == 0" style="color: #ed1204">{{item.state | FormatDate}}</span>
-            <span v-if="item.type == 1" style="color: deepskyblue">{{item.state | FormatDate}}</span>
-            <span v-if="item.type == 2" style="color: lightcoral">{{item.state | FormatDate}}</span>
-            <span v-if="item.type == 3" style="">{{item.state | FormatDate}}</span>-->
+            <span v-if="item.type == 0" style="color: black">{{item.state | FormatDate}}</span>
+            <span v-if="item.type == 1" style="color: red">{{item.state | FormatDate}}</span>
+            <span v-if="item.type == 2" style="color: yellow">{{item.state | FormatDate}}</span>
+            <span v-if="item.type == 3" style="color: purple">{{item.state | FormatDate}}</span>
+            <span v-if="item.type == 4" style="color: blue">{{item.state | FormatDate}}</span>
+            <span v-if="item.type == 5" style="color: green">{{item.state | FormatDate}}</span>
             <span>
               <img v-if="item.canedit == 1" :src="'./static/storesDaily/edit.png'" width="15" height="15">
             </span>
@@ -33,13 +34,11 @@
         </div>
       </div>
     </div>
-
     <div class="footer">
       <div class="footerBtn">
-        <mt-button @click="makeSureDaily">确认日报</mt-button>
+        <mt-button @click="makeSureDaily" :class="{'isSureDaily' : isSureDaily}" :disabled="makesure">确认日报</mt-button>
       </div>
     </div>
-
     <mt-datetime-picker
       ref="picker"
       type="date"
@@ -52,7 +51,6 @@
       :closeOnClickModal="false"
     >
     </mt-datetime-picker>
-
     <mt-popup
       v-model="popupVisible"
       :closeOnClickModal="false"
@@ -77,7 +75,7 @@
       <div class="maskT">
         <div class="msgTip">{{msgTip}}</div>
         <div class="footerBtn">
-          <mt-button @click="sureBtn">确认</mt-button>
+          <mt-button @click="sureBtn">{{btnTitle}}</mt-button>
         </div>
       </div>
     </mt-popup>
@@ -91,110 +89,23 @@
   export default {
     data() {
       return {
-        popupVisible: false,              // 控制蒙版的显隐
+        popupVisible: false,               // 控制蒙版的显隐
         popupSubmit: false,                // 提交弹窗
         msgTip: "",                        // 提示信息
         pickerValue: new Date().Format("yyyy-MM-dd"),
         pickerData: new Date().Format("yyyy-MM-dd"),
         index: 0,               // 记录当前被选中cell
         value: [],              // 记录当前被选中
-        list: [
-          {
-            name: "程俊文",
-            state: ["已签到", "未签到"],
-            type: 0,         // 红色
-            storeuser: 1,
-            canedit: 1
-          },
-          {
-            name: "程俊文",
-            state: ["已签到", "未签到"],
-            type: 0,         // 红色
-            storeuser: 1,
-            canedit: 1
-          },
-          {
-            name: "程俊文",
-            state: ["已签到"],
-            type: 1         // 蓝色
-          },
-          {
-            name: "程俊文",
-            state: ["未签到"],
-            type: 2         // 橙色
-          },
-          {
-            name: "程俊文",
-            state: ["未签到"],
-            type: 3         // 黑色
-          },
-        ],
-        detail: [
-          {
-            msg: "未签到",
-            selected: false
-          },
-          {
-            msg: "已签到",
-            selected: false
-          },
-          {
-            msg: "早退",
-            selected: false
-          },
-          {
-            msg: "已签退",
-            selected: false
-          },
-          {
-            msg: "休息",
-            selected: false
-          },
-          {
-            msg: "补休",
-            selected: false
-          },
-          {
-            msg: "事假",
-            selected: false
-          },
-          {
-            msg: "病假",
-            selected: false
-          },
-          {
-            msg: "旷工",
-            selected: false
-          },
-          {
-            msg: "年假",
-            selected: false
-          },
-          {
-            msg: "婚嫁",
-            selected: false
-          },
-          {
-            msg: "产假",
-            selected: false
-          },
-          {
-            msg: "陪产假",
-            selected: false
-          },
-          {
-            msg: "工伤",
-            selected: false
-          },
-          {
-            msg: "丧假",
-            selected: false
-          }
-        ],
+        list: [],
+        detail: [],
         endDate: new Date(),
-        count: 0,                // 记录当前选中个数
+        count: 0,                 // 记录当前选中个数
         flagTip: true,            // 防止多次触发
-        code: null                // 记录初始化code值
+        code: null,               // 记录初始化code值
+        btnTitle: '确定',                 // 按钮名称
+        isSureDaily: false,
+        makesure: true,
+        base_state: []
       }
     },
     methods: {
@@ -211,7 +122,6 @@
             value.selected = true;
           }
         })
-
       },
       selected(count) {
         var _this = this;
@@ -254,15 +164,12 @@
         var state_a = "";
         var state_b = "";
 
-        if (_this.value.length == 1){
-           state_a = _this.value[0];
-        }else if (_this.value.length == 2){
-           state_a = _this.value[0];
-           state_b = _this.value[1];
+        if (_this.value.length == 1) {
+          state_a = _this.value[0];
+        } else if (_this.value.length == 2) {
+          state_a = _this.value[0];
+          state_b = _this.value[1];
         }
-
-        /*console.log(state_a);
-        console.log(state_b);*/
 
         var params = {
           id: this.list[_this.index].id,
@@ -270,79 +177,24 @@
           state_b: state_b                     // 修改后
         };
 
-        console.log(params);
-
         // 确认日报
         editDailyInitialize(params).then((res) => {
           _this.msgTip = res.msg;
           _this.popupSubmit = true;
           if (res.code == 1) {
-            _this.list[_this.index].state = this.value;
+            _this.api();
             _this.value = [];
             _this.count = 0;
           }
-          _this.detail = [
-            {
-              msg: "未签到",
+          var arr = [];
+          this.base_state.forEach(function (value, index) {
+            arr.push({
+              msg: value,
               selected: false
-            },
-            {
-              msg: "已签到",
-              selected: false
-            },
-            {
-              msg: "早退",
-              selected: false
-            },
-            {
-              msg: "已签退",
-              selected: false
-            },
-            {
-              msg: "休息",
-              selected: false
-            },
-            {
-              msg: "补休",
-              selected: false
-            },
-            {
-              msg: "事假",
-              selected: false
-            },
-            {
-              msg: "病假",
-              selected: false
-            },
-            {
-              msg: "旷工",
-              selected: false
-            },
-            {
-              msg: "年假",
-              selected: false
-            },
-            {
-              msg: "婚嫁",
-              selected: false
-            },
-            {
-              msg: "产假",
-              selected: false
-            },
-            {
-              msg: "陪产假",
-              selected: false
-            },
-            {
-              msg: "工伤",
-              selected: false
-            },
-            {
-              msg: "丧假",
-              selected: false
-            }
-          ]
+            })
+          });
+
+          this.detail = arr;
         }).catch((error) => {
           console.log(error);
         });
@@ -356,15 +208,16 @@
         this.api();
       },
       sureBtn() {
-        if (this.code == -1 || this.code == 3 || this.code == 4){
-          this.$router.push("/");
+        if (this.code == -1 || this.code == 3 || this.code == 4) {
+          this.wx.closeWindow();
+        } else if (this.msgTip == '确认日报成功') {
+          this.$router.push('/')
         }
         this.popupSubmit = false;
       },
       // 日报-初始化
       api() {
         var _this = this;
-
         var params = {
           "date": _this.pickerData
         };
@@ -372,20 +225,25 @@
         var arr = [];
 
         storesDailyInitialize(params).then((res) => {
-          _this.msgTip = res.msg;
           if (res.code == 1) {
-            _this.list = res.data.list;
-
+            this.base_state = res.data.base_state;
             res.data.base_state.forEach(function (value, index) {
               arr.push({
                 msg: value,
                 selected: false
               })
             });
-
             _this.detail = arr;
 
+            if (res.data.makesure == 0) {
+              _this.makesure = false;
+            } else if (res.data.makesure == 1) {
+              _this.makesure = true;
+            }
+            _this.list = res.data.list;
+
           } else {
+            _this.msgTip = res.msg;
             _this.popupSubmit = true;
           }
         }).catch((error) => {
@@ -402,14 +260,14 @@
         makeSureDailyInitialize(params).then((res) => {
           _this.msgTip = res.msg;
           _this.popupSubmit = true;
-        }).catch((res) => {
 
+          if (res.msg == '确认日报成功') {
+            this.btnTitle = '返回';
+          }
+
+        }).catch((res) => {
         })
       },
-      setSlotValue(index,value){
-        console.log(index);
-        console.log(value);
-      }
     },
     mounted() {
       this.api();
@@ -486,11 +344,11 @@
       align-items: center;
       font-weight: 200;
       font-size: 14px;
-      span:nth-child(1){
+      span:nth-child(1) {
         flex: 9;
         text-align: center;
       }
-      span:nth-child(2){
+      span:nth-child(2) {
         flex: 2;
         line-height: 45px;
         height: 45px;
@@ -589,4 +447,5 @@
       font-size: 16px;
     }
   }
+
 </style>

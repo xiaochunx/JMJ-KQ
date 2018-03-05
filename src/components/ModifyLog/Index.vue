@@ -74,18 +74,6 @@
       </mt-popup>
     </div>
 
-
-    <div class="tipLoading">
-
-      <mt-popup
-        v-model="loading"
-        :closeOnClickModal="false"
-      >
-        <div class="loading">
-          <mt-spinner type="fading-circle" class="isLoading"></mt-spinner>
-        </div>
-      </mt-popup>
-    </div>
   </div>
 </template>
 <script>
@@ -95,14 +83,13 @@
   export default {
     data() {
       return {
-        loading: false,
         popupSubmit: false,
         msgTip: "",
         popupVisible: false,                       // popup弹窗
         pickerValue: new Date().Format("yyyy-MM-dd"),                           // 日期 -> 未转化
         storesNameIn: "",                          // 临时存储门店名称
         pickerData: new Date().Format("yyyy-MM"),
-        storesName: "天河北店",                     // 门店名称
+        storesName: "",                           // 门店名称
         code: null,                                // 记录当前返回code值
         list: [
           {
@@ -153,12 +140,8 @@
         this.apiInitialize();
       },
       operation(value) {
-        // 取消
-        if (value == 1) {
-
-        }
         // 确认
-        else if (value == 2) {
+        if (value == 2) {
           if (this.storesNameIn != '') {
             this.storesName = this.storesNameIn;
             // 在这里发送网络请求
@@ -177,62 +160,9 @@
         };
 
         modifyLogInitialize(params).then((res) => {
-          /*res = {
-            "code": "1",
-            "msg": "",
-            "data": {
-              "stores": [
-                "天河3店",
-                "天河2店"
-              ],
-              "list": [
-                {
-                  "name": "黄秀",
-                  "old_state": "未签到",
-                  "new_state": "已签到",
-                  "op_name": "陈俊文",
-                  "spop_name": "陈俊文",
-                  "time": "2017-11-08 19:49:47"
-                },
-                {
-                  "name": "黄秀",
-                  "old_state": "已签到",
-                  "new_state": "已签到+早退",
-                  "op_name": "陈俊文",
-                  "spop_name": "无",
-                  "time": "2017-11-08 16:18:35"
-                },
-                {
-                  "name": "黄秀",
-                  "old_state": "已签到+早退",
-                  "new_state": "已签到+早退",
-                  "op_name": "陈俊文",
-                  "spop_name": "无",
-                  "time": "2017-11-08 16:18:35"
-                },
-                {
-                  "name": "李炜强",
-                  "old_state": "未签到",
-                  "new_state": "病假+旷工",
-                  "op_name": "陈俊文",
-                  "spop_name": "无",
-                  "time": "2017-11-08 16:18:35"
-                },
-                {
-                  "name": "黄秀",
-                  "old_state": "未签到",
-                  "new_state": "病假+旷工",
-                  "op_name": "陈俊文",
-                  "spop_name": "无",
-                  "time": "2017-11-08 16:18:35"
-                }
-              ]
-            }
-          }*/
           _this.code = res.code;
 
           if (res.code == 1) {
-            _this.storesName = res.data.stores[0];
             _this.slots[0].values = res.data.stores;
             _this.list = res.data.list;
 
@@ -249,7 +179,6 @@
       },
     },
     mounted() {
-      this.loading = true;
       var _this = this;
 
       var params = {
@@ -259,60 +188,6 @@
 
       modifyLogInitialize(params).then((res) => {
 
-        /*res = {
-          "code": "1",
-          "msg": "",
-          "data": {
-            "stores": [
-              "天河3店",
-              "天河2店"
-            ],
-            "list": [
-              {
-                "name": "黄秀",
-                "old_state": "未签到",
-                "new_state": "已签到",
-                "op_name": "陈俊文",
-                "spop_name": "陈俊文",
-                "time": "2017-11-08 19:49:47"
-              },
-              {
-                "name": "黄秀",
-                "old_state": "已签到",
-                "new_state": "已签到+早退",
-                "op_name": "陈俊文",
-                "spop_name": "无",
-                "time": "2017-11-08 16:18:35"
-              },
-              {
-                "name": "黄秀",
-                "old_state": "已签到+早退",
-                "new_state": "已签到+早退",
-                "op_name": "陈俊文",
-                "spop_name": "无",
-                "time": "2017-11-08 16:18:35"
-              },
-              {
-                "name": "李炜强",
-                "old_state": "未签到",
-                "new_state": "病假+旷工",
-                "op_name": "陈俊文",
-                "spop_name": "无",
-                "time": "2017-11-08 16:18:35"
-              },
-              {
-                "name": "黄秀",
-                "old_state": "未签到",
-                "new_state": "病假+旷工",
-                "op_name": "陈俊文",
-                "spop_name": "无",
-                "time": "2017-11-08 16:18:35"
-              }
-            ]
-          }
-        }*/
-
-        _this.loading = false;
         _this.code = res.code;
         if (res.code == 1) {
           _this.storesName = res.data.stores[0];
@@ -464,19 +339,4 @@
     width: 100%;
   }
 
-  .tipLoading{
-    .mint-popup{
-      width: 100px;
-    }
-    .loading {
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      .isLoading {
-        margin-bottom: 10px;
-      }
-    }
-  }
 </style>

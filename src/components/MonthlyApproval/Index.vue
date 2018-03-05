@@ -118,16 +118,7 @@
       </div>
     </mt-popup>
 
-    <div class="tipLoading">
-      <mt-popup
-        v-model="loading"
-        :closeOnClickModal="false"
-      >
-        <div class="loading">
-          <mt-spinner type="fading-circle" class="isLoading"></mt-spinner>
-        </div>
-      </mt-popup>
-    </div>
+
   </div>
 </template>
 <script>
@@ -137,7 +128,6 @@
   export default {
     data() {
       return {
-        loading: false,
         pickerData: new Date().Format("yyyy-MM"),       // 日期 -> 转化(默认今天)
         storesName: "",                              // 门店名称
         storesNameIn: "",
@@ -163,7 +153,7 @@
         slots: [
           {
             flex: 1,
-            values: [/*'天河北', '天河北店', '天河北店', '天河北店', '天河北店', '天河北店'*/],
+            values: [],
             className: 'slot1',
             textAlign: 'center'
           }],                                      // 门店列表
@@ -268,7 +258,6 @@
         monthlyApprovalInitialize(params).then((res) => {
 
           _this.code = res.code;
-          _this.loading = false;
 
           /*res = {
             "code": "1",
@@ -338,7 +327,6 @@
       apiPost(params) {
 
         var _this = this;
-        this.loading = true;
 
         monthlyApprovalPost(params).then((res) => {
           /*res = {
@@ -346,7 +334,6 @@
             msg: "处理成功"
           };*/
 
-          _this.loading = false;
           _this.popupDetail = false;
           _this.msgTip = res.msg;
           _this.popupMsgTip = true;
@@ -358,7 +345,6 @@
     },
     // 月报审批-初始化
     mounted() {
-      this.loading = true;
       var _this = this;
 
       var params = {
@@ -372,7 +358,7 @@
         if (dom.length == 4) {
           dom[2].remove();
         }
-      }, 100)
+      }, 100);
 
       monthlyApprovalInitialize(params).then((res) => {
         /*res = {
@@ -607,19 +593,4 @@
     width: 80%;
   }
 
-  .tipLoading {
-    .mint-popup {
-      width: 100px;
-    }
-    .loading {
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      .isLoading {
-        margin-bottom: 10px;
-      }
-    }
-  }
 </style>
