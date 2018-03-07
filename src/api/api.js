@@ -1,6 +1,9 @@
 import axios from 'axios'
 import qs from 'qs'
 
+
+// axios.defaults.baseURL = 'http://kaoqin.jiumaojiu.com';
+
 // 配置域名
 let base = '';
 // 延迟时间

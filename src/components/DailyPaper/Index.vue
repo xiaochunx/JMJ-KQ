@@ -82,7 +82,7 @@
         popupSubmit: false,                // 提交弹窗
         msgTip: "",                        // 提示信息
         endDate: new Date("2020-01-01"),               // 开始日期的结束时间
-        pickerValue1: "",                  // 开始日期选中值,未转化
+        pickerValue1:  new Date(),                  // 开始日期选中值,未转化
         pickerValue2: "",                  // 结束日期选中值,未转化
         authorizedMan: "",                 // 授权人员
         code: null,                        // 记录当前返回的code值
@@ -178,6 +178,7 @@
         if (this.flag == 0){
            return this.start[this.index];
         }else if (this.flag == 1){
+
           return new Date(this.pickerValue1).Format("yyyy-MM-dd");
         }
       },

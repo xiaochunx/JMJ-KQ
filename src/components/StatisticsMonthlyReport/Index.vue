@@ -132,6 +132,15 @@
 
   import Vue from 'vue'
 
+  Vue.filter('FormatDate', function (item) {
+    if (item) {
+      return item.join("+");
+    } else {
+      return '';
+    }
+  });
+
+
   export default {
     data() {
       return {
@@ -527,7 +536,7 @@
   }
 
   .box {
-    height: 80%;
+    height: calc(~"100% - 45px");
   }
 
   #table {

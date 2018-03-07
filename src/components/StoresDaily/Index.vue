@@ -124,11 +124,27 @@
         })
       },
       selected(count) {
+
         var _this = this;
         if (this.flagTip) {
           this.flagTip = false;
-
           this.detail[count].selected = !this.detail[count].selected;
+
+
+          if (this.detail[count].msg == '未签到'){
+             this.detail.forEach(function (value) {
+               if (value.msg != '未签到' && value.selected){
+                  value.selected = false;
+               }
+             })
+          }else {
+            this.detail.forEach(function (value) {
+              if (value.msg == '未签到' && value.selected){
+                 value.selected = false;
+              }
+            })
+          }
+
 
           var num = 0;
           this.detail.forEach(function (value) {
